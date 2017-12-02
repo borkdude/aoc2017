@@ -3,17 +3,18 @@
             [clojure.string :as str]
             [util :refer [input]]))
 
-(def part-1
+(defn part-1 []
   (let [txt (input "day1.txt")]
-    (reduce +
-            (map
-             (fn [a b]
-               (if (= a b)
-                 (Integer/parseInt (str a)) 0))
-             txt
-             (drop 1 (cycle txt))))))
+    (reduce
+     +
+     (map
+      (fn [a b]
+        (if (= a b)
+          (Integer/parseInt (str a)) 0))
+      txt
+      (drop 1 (cycle txt))))))
 
-(def part-2
+(defn part-2 []
   (let [txt (input "day1.txt")
         half (/ (count txt) 2)]
     (reduce

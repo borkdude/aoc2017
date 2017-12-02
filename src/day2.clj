@@ -3,7 +3,7 @@
             [clojure.string :as str]
             [util :refer [resource-reducible]]))
 
-(def part-1
+(defn part-1 []
   (transduce
    (comp
     (map #(str/split % #"\s"))
@@ -18,7 +18,7 @@
    +
    (resource-reducible "day2.txt")))
 
-(defn find-dividibles [nums]
+(defn find-divisibles [nums]
   (let [desc (sort-by - nums)
         asc  (sort nums)]
     (for [greater desc
@@ -27,7 +27,7 @@
           :when  (zero? (mod greater smaller))]
       [greater smaller])))
 
-(def part-2
+(defn part-2 []
   (transduce
    (comp
     (map #(str/split % #"\s"))
