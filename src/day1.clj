@@ -1,12 +1,7 @@
 (ns day1
   (:require [clojure.java.io :as io]
-            [clojure.string :as str]))
-
-(defn input [f]
-  (-> f
-      io/resource
-      slurp
-      str/trim))
+            [clojure.string :as str]
+            [util :refer [input]]))
 
 (def part-1
   (let [txt (input "day1.txt")]
