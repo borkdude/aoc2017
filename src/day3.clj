@@ -21,20 +21,13 @@
           :left  [:x -1]
           :down  [:y 1]
           :up    [:y -1])]
-    (->
-     (update tile axis + delta)
-     (update :n inc))))
+    (update tile axis + delta)))
 
 (defn tile-at
   "Returns nth tile in spiral"
   [n]
-  (reduce
-   (fn [tile next-direction]
-     (if (= (:n tile) n)
-       (reduced tile)
-       (next-tile tile next-direction)))
-   {:x 0 :y 0 :n 1}
-   directions))
+  (reduce next-tile {:x 0 :y 0}
+   (take (inc n) directions)))
 
 (defn part-1 []
   (let [tile (tile-at 289326)]
@@ -58,7 +51,7 @@
 (defn tile-with-bigger-sum
   "Returns first tile with sum > n"
   [n]
-  (let [init-tile {:x 0 :y 0 :n 1 :v 1}]
+  (let [init-tile {:x 0 :y 0 :v 1}]
     (loop [tile init-tile
            tiles {[0 0] init-tile}
            directions directions]
@@ -68,8 +61,7 @@
                  new-tile
                  tiles)
             new-tile (assoc new-tile :v sum)]
-        (if (> sum
-               n)
+        (if (> sum n)
           new-tile
           (recur new-tile
                  (assoc tiles [(:x new-tile)
