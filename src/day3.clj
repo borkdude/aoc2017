@@ -2,6 +2,8 @@
   (:import [java.lang Math]))
 
 (def directions
+  "Infite seq of directions through
+  spiral: :right :up :left :left :down, etc."
   (let [dirs (cycle [[:right :up] [:left :down]])
         amount (map inc (range))]
     (mapcat (fn [[d1 d2] amount]
@@ -10,7 +12,9 @@
             dirs
             amount)))
 
-(defn update-tile [tile direction]
+(defn update-tile
+  "Calculates (n+1)th tile from nth tile"
+  [tile direction]
   (->
    (case direction
      :right
@@ -27,7 +31,9 @@
              :y dec))
    (update :n inc)))
 
-(defn tile-at [n]
+(defn tile-at
+  "Returns nth tile in spiral"
+  [n]
   (reduce
    (fn [tile next-direction]
      (if (= (:n tile) n)
@@ -41,8 +47,10 @@
     (+ (Math/abs (:x tile))
        (Math/abs (:y tile)))))
 
-(defn sum-of-neighbours [{:keys [x y]}
-                         tiles]
+(defn sum-of-neighbours
+  "Sum of neighbouring tiles"
+  [{:keys [x y]}
+   tiles]
   (let [neighbour-positions [[(dec x) y]
                              [(inc x) y]
                              [x (dec y)]
@@ -55,24 +63,33 @@
                          neighbour-positions)]
     (reduce +' (map :v neighbours))))
 
-(defn tile-with-bigger-sum [n]
+(defn tile-with-bigger-sum
+  "Returns first tile with sum > n"
+  [n]
   (let [init-tile {:x 0 :y 0 :n 1 :v 1}]
     (loop [tile init-tile
            tiles {[0 0] init-tile}
            directions directions]
-      (let [next-direction (first directions)]
-        (let [new-tile (update-tile tile next-direction)
-              new-tile (assoc new-tile :v (sum-of-neighbours
-                                           new-tile
-                                           tiles))]
-          (if (> (:v new-tile)
-                 n)
-            new-tile
-            (recur new-tile
-                   (assoc tiles [(:x new-tile)
-                                 (:y new-tile)]
-                          new-tile)
-                   (rest directions))))))))
+      (let [next-direction (first directions)
+            new-tile (update-tile tile next-direction)
+            sum (sum-of-neighbours
+                 new-tile
+                 tiles)
+            new-tile (assoc new-tile :v sum)]
+        (if (> sum
+               n)
+          new-tile
+          (recur new-tile
+                 (assoc tiles [(:x new-tile)
+                               (:y new-tile)]
+                        new-tile)
+                 (rest directions)))))))
 
 (defn part-2 []
   (:v (tile-with-bigger-sum 289326)))
+
+;;;; Scratch
+
+(comment
+  (part-1)
+  (part-2))
