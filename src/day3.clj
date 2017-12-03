@@ -12,7 +12,7 @@
             dirs
             amount)))
 
-(defn update-tile
+(defn next-tile
   "Calculates (n+1)th tile from nth tile"
   [tile direction]
   (->
@@ -38,7 +38,7 @@
    (fn [tile next-direction]
      (if (= (:n tile) n)
        (reduced tile)
-       (update-tile tile next-direction)))
+       (next-tile tile next-direction)))
    {:x 0 :y 0 :n 1}
    directions))
 
@@ -71,7 +71,7 @@
            tiles {[0 0] init-tile}
            directions directions]
       (let [next-direction (first directions)
-            new-tile (update-tile tile next-direction)
+            new-tile (next-tile tile next-direction)
             sum (sum-of-neighbours
                  new-tile
                  tiles)
