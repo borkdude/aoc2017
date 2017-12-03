@@ -27,7 +27,8 @@
   "Returns nth tile in spiral"
   [n]
   (reduce next-tile {:x 0 :y 0}
-   (take (inc n) directions)))
+          (take (dec n)
+                directions)))
 
 (defn part-1 []
   (let [tile (tile-at 289326)]
@@ -76,4 +77,5 @@
 
 (comment
   (part-1)
-  (part-2))
+  (part-2)
+  )
