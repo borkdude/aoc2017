@@ -40,3 +40,9 @@
            (/ greater smaller))))
    +
    (resource-reducible "day2.txt")))
+
+;;;; Scratch
+
+(comment
+  (part-1)
+  (part-2))

@@ -25,3 +25,9 @@
           (Integer/parseInt (str a)) 0))
       txt
       (drop half (cycle txt))))))
+
+;;;; Scratch
+
+(comment
+  (part-1)
+  (part-2))
