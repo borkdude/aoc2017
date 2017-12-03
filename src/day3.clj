@@ -15,21 +15,15 @@
 (defn next-tile
   "Calculates (n+1)th tile from nth tile"
   [tile direction]
-  (->
-   (case direction
-     :right
-     (update tile
-             :x inc)
-     :left
-     (update tile
-             :x dec)
-     :down
-     (update tile
-             :y inc)
-     :up
-     (update tile
-             :y dec))
-   (update :n inc)))
+  (let [[axis delta]
+        (case direction
+          :right [:x 1]
+          :left  [:x -1]
+          :down  [:y 1]
+          :up    [:y -1])]
+    (->
+     (update tile axis + delta)
+     (update :n inc))))
 
 (defn tile-at
   "Returns nth tile in spiral"
@@ -51,14 +45,12 @@
   "Sum of neighbouring tiles"
   [{:keys [x y]}
    tiles]
-  (let [neighbour-positions [[(dec x) y]
-                             [(inc x) y]
-                             [x (dec y)]
-                             [x (inc y)]
-                             [(dec x) (dec y)]
-                             [(dec x) (inc y)]
-                             [(inc x) (dec y)]
-                             [(inc x) (inc y)]]
+  (let [neighbour-positions
+        (for [dx [-1 0 1]
+              dy [-1 0 1]
+              :when (not= 0 dx dy)]
+          [(+ x dx)
+           (+ y dy)])
         neighbours (keep #(get tiles %)
                          neighbour-positions)]
     (reduce +' (map :v neighbours))))
