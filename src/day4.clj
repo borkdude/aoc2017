@@ -6,7 +6,7 @@
 
 (defn valid-passphrase?
   [phrase]
-  (distinct? phrase))
+  (apply distinct? phrase))
 
 (defn part-1
   []
@@ -77,4 +77,7 @@
   (time (part-2-naive))        ;; slow, about 2.5 s
   (time (part-2-sort))         ;; much better, 2 ms
   (time (part-2-frequencies))  ;; better 11 ms, but sort is faster
+
+  (valid-passphrase? ["foo" "bar"])
+  (valid-passphrase? ["foo" "foo"])
   )
