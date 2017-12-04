@@ -48,9 +48,22 @@
    +
    (resource-reducible "day4.txt")))
 
+(defn part-2-krisajenkins
+  "See https://github.com/krisajenkins/AdventOfCode/blob/master/src/Year2017/Day4.purs"
+  []
+  (transduce
+   (comp
+    (map #(str/split % #"\s"))
+    (map #(map sort %))
+    (filter valid-passphrase?)
+    (map (constantly 1)))
+   +
+   (resource-reducible "day4.txt")))
+
 ;;;; Scratch
 
 (comment
-  (part-1)
+  (time (part-1))
   (time (part-2))
+  (time (part-2-krisajenkins)) ;; much better
   )
