@@ -18,6 +18,11 @@
    +
    (resource-reducible "day4.txt")))
 
+;; first I checked for palindromes, but then realized they are not
+;; anagrams, which set me on the wrong foot to refactor to this
+;; inefficient solution. my excuse is that I just woke up and didn't
+;; have coffee yet :-D
+
 (defn anagrams
   [word]
   (map #(apply str %)
@@ -75,8 +80,8 @@
 (comment
   (time (part-1))
   (time (part-2-naive))        ;; slow, about 2.5 s
-  (time (part-2-sort))         ;; much better, 2 ms
-  (time (part-2-frequencies))  ;; better 11 ms, but sort is faster
+  (time (part-2-sort))         ;; much better, 5 ms
+  (time (part-2-frequencies))  ;; about the same as sort
 
   (valid-passphrase? ["foo" "bar"])
   (valid-passphrase? ["foo" "foo"])
