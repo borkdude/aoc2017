@@ -26,7 +26,8 @@
 (defn tile-at
   "Returns nth tile in spiral"
   [n]
-  (reduce next-tile {:x 0 :y 0}
+  (reduce next-tile
+          {:x 0 :y 0}
           (take (dec n)
                 directions)))
 
