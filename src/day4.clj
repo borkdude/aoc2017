@@ -6,8 +6,7 @@
 
 (defn valid-passphrase?
   [phrase]
-  (= (count phrase)
-     (count (set phrase))))
+  (distinct? phrase))
 
 (defn part-1
   []
@@ -60,10 +59,22 @@
    +
    (resource-reducible "day4.txt")))
 
+(defn part-2-frequencies
+  []
+  (transduce
+   (comp
+    (map #(str/split % #"\s"))
+    (map frequencies)
+    (filter valid-passphrase?)
+    (map (constantly 1)))
+   +
+   (resource-reducible "day4.txt")))
+
 ;;;; Scratch
 
 (comment
   (time (part-1))
   (time (part-2))
   (time (part-2-krisajenkins)) ;; much better
+  (time (part-2-frequencies))  ;; better, but sort is faster
   )
