@@ -36,7 +36,7 @@
                  (disj words %) %)
                words))))
 
-(defn part-2
+(defn part-2-naive
   []
   (transduce
    (comp
@@ -47,7 +47,7 @@
    +
    (resource-reducible "day4.txt")))
 
-(defn part-2-krisajenkins
+(defn part-2-sort
   "See https://github.com/krisajenkins/AdventOfCode/blob/master/src/Year2017/Day4.purs"
   []
   (transduce
@@ -74,7 +74,7 @@
 
 (comment
   (time (part-1))
-  (time (part-2))
+  (time (part-2-naive))        ;; slow
   (time (part-2-krisajenkins)) ;; much better
   (time (part-2-frequencies))  ;; better, but sort is faster
   )
