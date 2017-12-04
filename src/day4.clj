@@ -2,6 +2,7 @@
   (:require [clojure.java.io :as io]
             [clojure.math.combinatorics :as combo]
             [clojure.string :as str]
+            [net.cgrand.xforms :as x]
             [util :refer [resource-reducible]]))
 
 (defn valid-passphrase?
@@ -10,12 +11,10 @@
 
 (defn part-1
   []
-  (transduce
+  (x/count
    (comp
     (map #(str/split % #"\s"))
-    (filter valid-passphrase?)
-    (map (constantly 1)))
-   +
+    (filter valid-passphrase?))
    (resource-reducible "day4.txt")))
 
 ;; first I checked for palindromes, but then realized they are not
@@ -43,36 +42,30 @@
 
 (defn part-2-naive
   []
-  (transduce
+  (x/count
    (comp
     (map #(str/split % #"\s"))
     (filter valid-passphrase?)
-    (filter valid-anagram-passphrase?)
-    (map (constantly 1)))
-   +
+    (filter valid-anagram-passphrase?))
    (resource-reducible "day4.txt")))
 
 (defn part-2-sort
   "See https://github.com/krisajenkins/AdventOfCode/blob/master/src/Year2017/Day4.purs"
   []
-  (transduce
+  (x/count
    (comp
     (map #(str/split % #"\s"))
     (map #(map sort %))
-    (filter valid-passphrase?)
-    (map (constantly 1)))
-   +
+    (filter valid-passphrase?))
    (resource-reducible "day4.txt")))
 
 (defn part-2-frequencies
   []
-  (transduce
+  (x/count
    (comp
     (map #(str/split % #"\s"))
     (map frequencies)
-    (filter valid-passphrase?)
-    (map (constantly 1)))
-   +
+    (filter valid-passphrase?))
    (resource-reducible "day4.txt")))
 
 ;;;; Scratch
