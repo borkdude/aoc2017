@@ -110,7 +110,6 @@
   (time (part-1))
   (time (part-2)) ;; 5.6 s, not fast enough for me
   (time (part-2-faster)) ;; 3.8 s, still sucks
-  (time (part-2-array)) ;; 240 ms
   
   (quick-bench (part-2-array)) ;; 104 ms
   (quick-bench (part-2-array-faster?)) ;; 97 ms
