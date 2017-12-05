@@ -55,7 +55,7 @@
 (defn part-2-array []
   (let [^ints maze
         (->>
-         (into []
+         data #_(into []
                (map #(Integer/parseInt %))
                (resource-reducible "day5.txt"))
          (into-array Integer/TYPE))
@@ -78,7 +78,7 @@
 (defn part-2-array-faster? []
   (let [^ints maze
         (->>
-         (into []
+         data #_(into []
                (map #(Integer/parseInt %))
                (resource-reducible "day5.txt"))
          (into-array Integer/TYPE))
@@ -111,8 +111,8 @@
   (time (part-2)) ;; 5.6 s, not fast enough for me
   (time (part-2-faster)) ;; 3.8 s, still sucks
   
-  (quick-bench (part-2-array)) ;; 104 ms
-  (quick-bench (part-2-array-faster?)) ;; 97 ms
+  (quick-bench (part-2-array)) ;; 86 ms
+  (quick-bench (part-2-array-faster?)) ;; 78 ms
   
   ;; for mfikes bench comparison
   (def data [1
