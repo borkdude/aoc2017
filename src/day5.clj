@@ -81,4 +81,8 @@
   (time (part-2)) ;; 5.6 s, not fast enough for me
   (time (part-2-faster)) ;; 3.8 s, still sucks
   (time (part-2-array)) ;; 240 ms
+
+  (dotimes [n 60]
+    (println "Run" (inc n) "of 60.")
+    (println (time (part-2-array))))
   )
