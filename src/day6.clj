@@ -17,10 +17,12 @@
               c m))
           (map vector (range) nums)))
 
-(defn next-pos [state cur-pos]
+(defn next-pos
+  [state cur-pos]
   (mod (inc cur-pos) (count state)))
 
-(defn next-state [state]
+(defn next-state
+  [state]
   (let [[max-pos max-val] (first-max-pos state)
         dist-size (->
                    (/ max-val (count state))
@@ -40,7 +42,8 @@
             (update max-pos - dist-size))
            (next-pos state pos)))))))
 
-(defn solve [data]
+(defn solve
+  [data]
   (loop [states #{data}
          state data
          n 1]
