@@ -5,10 +5,11 @@
    [util :refer [input]])
   (:import [java.lang Math]))
 
-(def data (as-> "day6.txt" $
-            (input $)
-            (str/split $ #"\s")
-            (mapv #(Integer/parseInt %) $)))
+(defn data []
+  (as-> "day6.txt" $
+    (input $)
+    (str/split $ #"\s")
+    (mapv #(Integer/parseInt %) $)))
 
 (defn first-max-pos
   [nums]
@@ -56,10 +57,10 @@
                (inc n))))))
 
 (defn part-1 []
-  (second (solve data)))
+  (second (solve (data))))
 
 (defn part-2 []
-  (second (solve (first (solve data)))))
+  (second (solve (first (solve (data))))))
 
 ;;;; Scratch
 
