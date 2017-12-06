@@ -1,6 +1,7 @@
 (ns day6
   (:require
    [clojure.string :as str]
+   [criterium.core :refer [quick-bench]]
    [util :refer [input]])
   (:import [java.lang Math]))
 
@@ -63,7 +64,7 @@
 ;;;; Scratch
 
 (comment
-  (part-1)
-  (part-2)
+  (quick-bench (part-1)) ;; 63 ms
+  (quick-bench (part-2)) ;; 87 ms
   )
 
