@@ -11,14 +11,11 @@
 
 (defn first-max-pos
   [nums]
-  (let [max-num (apply max nums)]
-    (first
-     (filter identity
-             (map (fn [pos n]
-                    (when (= max-num n)
-                      [pos n]))
-                  (range)
-                  nums)))))
+  (reduce (fn [[_ max-val :as m]
+               [_ cur-val :as c]]
+            (if (> cur-val max-val)
+              c m))
+          (map vector (range) nums)))
 
 (defn next-pos [state cur-pos]
   (mod (inc cur-pos) (count state)))
