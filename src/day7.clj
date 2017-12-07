@@ -15,7 +15,7 @@
   (into []
         (comp (map #(format "[%s]" %))
               (map edn/read-string))
-        (resource-reducible "day7-mfikes.txt")))
+        (resource-reducible "day7.txt")))
 
 (defn parse
   [[name [weight]
@@ -64,12 +64,13 @@
            child-weights)))
 
 (defn unbalanced-balanced
-  [vals]
-  (->> (frequencies vals)
-       (group-by val)
-       sort
-       (map #(second %))
-       (map #(ffirst %))))
+  [[a b c & nums]]
+  (cond (= a b) [(some
+                  #(when (not= a %) %)
+                  (conj nums c))
+                 a]
+        (= a c) [b a]
+        :else   [a b]))
 
 (defn find-by-val
   [m v]
