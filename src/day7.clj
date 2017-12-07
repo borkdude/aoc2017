@@ -15,7 +15,7 @@
   (into []
         (comp (map #(format "[%s]" %))
               (map edn/read-string))
-        (resource-reducible "day7.txt")))
+        (resource-reducible "day7-mfikes.txt")))
 
 (defn parse
   [[name [weight]
@@ -86,23 +86,28 @@
                  (vals children)))))
 
 (defn part-2
-  []
-  (let [{:keys [nodes ancestors]}
-        (parse-all (data))
-        cm (child-map ancestors)]
-    (try (tree-weight 'hmvwl cm nodes)
-         (catch Exception e
-           (let [d (ex-data e)
-                 [unbalanced balanced]
-                 (unbalanced-balanced (vals d))
-                 k (find-by-val d unbalanced)
-                 diff (- balanced unbalanced)
-                 w (:weight (get nodes k))]
-             (+ w diff))))))
+  ([] (part-2 (part-1)))
+  ([p1]
+   (let [{:keys [nodes ancestors]}
+         (parse-all (data))
+         cm (child-map ancestors)]
+     (try (tree-weight p1 cm nodes)
+          (catch Exception e
+            (let [d (ex-data e)
+                  [unbalanced balanced]
+                  (unbalanced-balanced (vals d))
+                  k (find-by-val d unbalanced)
+                  diff (- balanced unbalanced)
+                  w (:weight (get nodes k))]
+              (+ w diff)))))))
 
 ;;;; Scratch
 
 (comment
-  (quick-bench (part-1)) ;; hmvwl, 6.8 ms
-  (quick-bench (part-2)) ;; 1853,  6.8 ms
+  (quick-bench (part-1))        ;; hmvwl, 6.8 ms
+  (quick-bench (part-2 'hmvwl)) ;; 1853,  6.8 ms
+
+  ;; mfikes' input
+  (quick-bench (part-1)) ;; mkxke, 9 ms
+  (quick-bench (part-2 'mkxke)) ;; 268, 10 ms
   )
