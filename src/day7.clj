@@ -90,7 +90,7 @@
   (let [{:keys [nodes ancestors]}
         (parse-all (data))
         cm (child-map ancestors)]
-    (try (tree-weight (part-1) cm nodes)
+    (try (tree-weight 'hmvwl cm nodes)
          (catch Exception e
            (let [d (ex-data e)
                  [unbalanced balanced]
@@ -103,5 +103,6 @@
 ;;;; Scratch
 
 (comment
-  (part-1)
-  (part-2))
+  (quick-bench (part-1)) ;; hmvwl, 6.8 ms
+  (quick-bench (part-2)) ;; 1853,  6.8 ms
+  )
