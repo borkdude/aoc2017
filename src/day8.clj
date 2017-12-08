@@ -32,31 +32,24 @@
 ;; change to a lower value, then cur-max was not the valid maximum
 ;; anymore.
 (defn solve
-  ""
   [data]
-  (let [end-state
-        (reduce
-         (fn [[cpu cur-max]
-              [r1 op1 v1
-               _
-               r2 op2 v2]]
-           (let [old (get cpu r1 0)
-                 new ((lookup-operation op1)
-                      old
-                      v1)
-                 yes? ((lookup-operation op2)
-                       (get cpu r2 0)
-                       v2)
-                 new-cpu (if yes?
-                           (assoc cpu r1 new)
-                           cpu)
-                 new-max (if yes?
-                           (max cur-max new)
-                           cur-max)]
-             [new-cpu new-max]))
-         [{} 0]
-         data)]
-    end-state))
+  (reduce
+   (fn [[cpu cur-max]
+        [r1 op1 v1
+         _
+         r2 op2 v2]]
+     (if ((lookup-operation op2)
+          (get cpu r2 0)
+          v2)
+       (let [new ((lookup-operation op1)
+                  (get cpu r1 0)
+                  v1)]
+         [(assoc cpu r1
+                 new)
+          (max cur-max new)])
+       [cpu cur-max]))
+   [{} 0]
+   data))
 
 (defn part-1
   []
@@ -69,8 +62,6 @@
 ;;;; Scratch
 
 (comment
-  (quick-bench (part-1)) ;; 5221, 5.6 ms
-  (quick-bench (part-2)) ;; 7491, 5.6 ms
-
-
-  )
+  (quick-bench (part-1)) ;; 5221, 5.5 ms
+  (quick-bench (part-2)) ;; 7491, 5.5 ms
+)
