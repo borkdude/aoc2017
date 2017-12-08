@@ -17,14 +17,17 @@
               (map edn/read-string))
         (resource-reducible "day8.txt")))
 
-(defn lookup-operation
-  [op]
-  (or (get {'inc +
-            'dec -
-            '!=  not=}
-           op
-           (resolve op))
-      (throw (Exception. (str "cannot resolve " op)))))
+;; instead of using resolve as a security breach, let's explicitly
+;; handle the possible inputs.
+(def lookup-operation
+  {'inc +
+   'dec -
+   '!=  not=
+   '==  ==
+   '<   <
+   '<=  <=
+   '>   >
+   '>=  >=})
 
 ;; By accident, the max returned by solve was the answer for part 2,
 ;; so I didn't have to change the code for that part. The error for
