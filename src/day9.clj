@@ -7,58 +7,69 @@
    [util :refer [input resource-reducible]])
   (:import [java.lang Math]))
 
+(set! *print-length* 20)
+
 (def lcb \{)
 (def rcb \})
+(def lab \<)
+(def rab \>)
+(def exl \!)
 
 (defn data
   []
-  (input "day9.txt"))
+  (input
+   #_"day9.txt"
+   #_"day9-fellshard.txt"
+   "day9-bhauman.txt"))
 
-(defn ignore
-  [s]
-  (str/replace s #"!." ""))
+(defn rf [{:keys [level score gc ignore? in-garbage? pos] :as state} c]
+  (cond 
+    ignore?
+    (assoc state :ignore? false)
+    ;; else
+    in-garbage?
+    (cond
+      (= exl c)
+      (assoc state :ignore? true)
+      ;; else
+      (= rab c)
+      (assoc state :in-garbage? false)
+      ;; else
+      :else
+      (update state :gc inc))
+    ;; else
+    (= lab c)
+    (assoc state :in-garbage? true)
+    ;; else
+    (= lcb c)
+    (assoc state
+           :level (inc level)
+           :score (+ score level))
+    ;; else
+    (= rcb c)
+    (update state :level dec)
+    :else state))
 
-(defn strip-garbage
-  [s]
-  (str/replace s #"<.*?>" ""))
-
-(defn count-groups
-  [s]
-  (first
-   (reduce (fn [[score level] c]
-             (condp = c
-               lcb [(+ score level)
-                    (inc level)]
-               rcb [score
-                    (dec level)]
-               [score level]))
-           [0 1]
-           s)))
+(defn solve [chars]
+  (reduce rf {:level 1
+              :score 0
+              :gc 0
+              :ignore? false
+              :in-garbage? false
+              :pos 0}
+          chars))
 
 (defn part-1
   []
-  (-> (data)
-      ignore
-      strip-garbage
-      count-groups))
-
-(defn count-garbage
-  [s]
-  (->> s
-       (re-seq #"<(.*?)>")
-       (map second)
-       (map count)
-       (apply +)))
+  (-> (data) solve :score))
 
 (defn part-2
   []
-  (-> (data)
-      ignore
-      count-garbage))
+  (-> (data) solve :gc))
 
 ;;;; Scratch
 
 (comment
-  (part-1) ;; 20530
-  (part-2) ;; 9978
+  (part-1) ;; 20530, fellshard: 17390,                bhauman: 13154
+  (part-2) ;; 9978,  fellshard: 7825 (wrong so far),  bhauman: 6369 
   )
