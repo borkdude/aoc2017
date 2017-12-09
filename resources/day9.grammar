@@ -1,0 +1,6 @@
+GROUP    = <'{'> CHILDREN <'}'> 
+<CHILDREN> = CHILD*
+<CHILD>    = (GROUP | GARBAGE) <','?>
+GARBAGE  = < '<' > ( NORMAL | ESCAPED)* < '>' >
+<NORMAL> = #'[<\w,{}\'\"]+'
+<ESCAPED>  = < #'!.'+ >
