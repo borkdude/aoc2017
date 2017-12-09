@@ -1,5 +1,4 @@
-(ns day9
-  (:refer-clojure :exclude [ancestors])
+(ns day9-single-pass
   (:require
    [clojure.edn :as edn]
    [clojure.string :as str]
@@ -18,15 +17,16 @@
 (defn data
   []
   (input
-   ;; "day9.txt"
+   #_ "day9.txt"
    "day9-fellshard.txt"
-   ;; "day9-bhauman.txt"
+   #_ "day9-bhauman.txt"
    ))
 
-(defn rf [{:keys [level score gc
-                  ignore? in-garbage?]
-           :as state} c]
-  (cond 
+(defn rf
+  [{:keys [level score gc
+           ignore? in-garbage?]
+    :as state} c]
+  (cond
     ignore?
     (assoc state :ignore? false)
     ;; else
@@ -53,7 +53,8 @@
     (update state :level dec)
     :else state))
 
-(defn solve [chars]
+(defn solve
+  [chars]
   (reduce rf {:level 1
               :score 0
               :gc 0
@@ -73,6 +74,6 @@
 ;;;; Scratch
 
 (comment
-  (part-1) ;; 20530, fellshard: 17390,                bhauman: 13154
-  (part-2) ;; 9978,  fellshard: 7825 (wrong so far),  bhauman: 6369 
+  (part-1) ;; 20530, fellshard: 17390, bhauman: 13154
+  (part-2) ;; 9978,  fellshard: 7825,  bhauman: 6369
   )
