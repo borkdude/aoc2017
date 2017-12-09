@@ -18,11 +18,13 @@
 (defn data
   []
   (input
-   #_"day9.txt"
-   #_"day9-fellshard.txt"
+   ;; "day9.txt"
+   ;; "day9-fellshard.txt"
    "day9-bhauman.txt"))
 
-(defn rf [{:keys [level score gc ignore? in-garbage? pos] :as state} c]
+(defn rf [{:keys [level score gc
+                  ignore? in-garbage?]
+           :as state} c]
   (cond 
     ignore?
     (assoc state :ignore? false)
