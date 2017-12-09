@@ -21,9 +21,11 @@
   [s]
   (str/replace s #"!." ""))
 
+(def garbage-reg #"<(.*?)>")
+
 (defn strip-garbage
   [s]
-  (str/replace s #"<.*?>" ""))
+  (str/replace s garbage-reg ""))
 
 (defn count-groups
   [s]
@@ -48,7 +50,7 @@
 (defn count-garbage
   [s]
   (->> s
-       (re-seq #"<(.*?)>")
+       (re-seq garbage-reg)
        (map second)
        (map count)
        (apply +)))
@@ -65,4 +67,3 @@
   (part-1) ;; 20530
   (part-2) ;; 9978
   )
-
