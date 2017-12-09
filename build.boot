@@ -4,3 +4,5 @@
                  [net.cgrand/xforms "0.15.0"]
                  [criterium "0.4.4"]]
  :resource-paths #{"resources" "src"})
+
+(set! *print-length* 20)
