@@ -1,10 +1,11 @@
 (ns day9-spec
+  "Solution for day 9 with Spec. Not finished."
   (:refer-clojure :exclude [ancestors])
   (:require
    [clojure.edn :as edn]
+   [clojure.spec.alpha :as s]
    [clojure.string :as str]
    [criterium.core :refer [quick-bench]]
-   [clojure.spec.alpha :as s]
    [util :refer [input resource-reducible]])
   (:import [java.lang Math]))
 
@@ -15,6 +16,7 @@
 (def lab \<)
 (def rab \>)
 (def exl \!)
+(def comma \,)
 
 (defn data
   []
@@ -24,80 +26,40 @@
    ;; "day9-bhauman.txt"
    ))
 
-(defn rf [{:keys [level score gc
-                  ignore? in-garbage?]
-           :as state} c]
-  (cond 
-    ignore?
-    (assoc state :ignore? false)
-    ;; else
-    in-garbage?
-    (cond
-      (= exl c)
-      (assoc state :ignore? true)
-      ;; else
-      (= rab c)
-      (assoc state :in-garbage? false)
-      ;; else
-      :else
-      (update state :gc inc))
-    ;; else
-    (= lab c)
-    (assoc state :in-garbage? true)
-    ;; else
-    (= lcb c)
-    (assoc state
-           :level (inc level)
-           :score (+ score level))
-    ;; else
-    (= rcb c)
-    (update state :level dec)
-    :else state
-    
-    #_(throw (Exception. (str "unexpected" c)))))
+(s/def ::escaped (s/cat :exl #{exl} :char char?))
 
 (s/def ::garbage (s/cat :lab #{lab}
-                        :content (s/* char?)
+                        :content
+                        (s/* (s/alt :escaped ::escaped
+                                    :char    char?))
                         :rab #{rab}))
-
-(s/conform ::garbage (seq "<<!x!>>"))
 
 (s/def ::group (s/cat :lcb #{lcb}
                       :children
-                      (s/* (s/cat :child (s/alt :group ::group
-                                                :garbage ::garbage)
-                                  :comma (s/? #{\,})))
+                      (s/* (s/cat
+                            :child (s/alt :group ::group
+                                          :garbage ::garbage)
+                            :comma (s/? #{comma})))
                       :rcb #{rcb}))
 
-(s/conform ::group (seq "{{},{<x>}}"))
-
-(defn parse-string [s]
+(defn parse
+  [s]
   (s/conform ::group (seq s)))
 
-(comment (parse-string (data))
-         (parse-string "{<x>,{<x>}}")
-         (def p (parse-string (data))))
-
-(defn solve [chars]
-  (reduce rf {:level 1
-              :score 0
-              :gc 0
-              :ignore? false
-              :in-garbage? false
-              :pos 0}
-          chars))
-
 (comment
-  (solve "{<<<>}")
+  (parse (str (apply str lcb (repeat 1000 "{{},{},{},{},{{{{{{<!>}}}}}}}"))
+              rcb))
+  (parse "{{<<!!!x>}}")
+  (def p (parse (data))) ;; why so slow?
   )
 
-#_(defn part-1
+(defn part-1
   []
-  (-> (data) solve :score))
+  )
 
-#_(defn part-2
+(defn part-2
   []
-  (-> (data) solve :count))
+  )
 
 ;;;; Scratch
 
