@@ -2,12 +2,12 @@
   (:require
    [clojure.string :as str]
    [criterium.core :refer [quick-bench]]
-   [util :refer [input]])
+   [util :refer [read]])
   (:import [java.lang Math]))
 
 (defn data []
   (as-> "day6.txt" $
-    (input $)
+    (read $)
     (str/split $ #"\s")
     (mapv #(Integer/parseInt %) $)))
 

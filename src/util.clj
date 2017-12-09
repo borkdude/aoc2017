@@ -3,11 +3,17 @@
             [clojure.string :as str])
   (:import [java.io BufferedReader]))
 
-(defn input [f]
+(defn read-lines
+  [f]
   (-> f
       io/resource
       slurp
-      str/trim))
+      str/trim
+      (str/split #"\n")))
+
+(defn read
+  [f]
+  (first (read-lines f)))
 
 (defn lines-reducible [^BufferedReader rdr]
   (reify clojure.lang.IReduceInit

@@ -1,14 +1,9 @@
 (ns day8
-  (:refer-clojure :exclude [ancestors])
   (:require
    [clojure.edn :as edn]
-   [clojure.set :as set]
    [clojure.string :as str]
    [criterium.core :refer [quick-bench]]
-   [util :refer [input resource-reducible]])
-  (:import [java.lang Math]))
-
-(set! *print-length* 20)
+   [util :refer [resource-reducible]]))
 
 (defn data
   []

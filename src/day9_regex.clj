@@ -1,21 +1,15 @@
 (ns day9-regex
-  (:refer-clojure :exclude [ancestors])
   (:require
-   [clojure.edn :as edn]
    [clojure.string :as str]
    [criterium.core :refer [quick-bench]]
-   [util :refer [input resource-reducible]])
-  (:import [java.lang Math]))
+   [util :refer [read resource-reducible]]))
 
 (def lcb \{)
 (def rcb \})
 
 (defn data
   []
-  (input
-   #_"day9-fellshard.txt"
-   "day9-bhauman.txt"
-   #_"day9.txt"))
+  (read "day9.txt"))
 
 (defn ignore
   [s]

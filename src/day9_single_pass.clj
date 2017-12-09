@@ -1,12 +1,7 @@
 (ns day9-single-pass
   (:require
-   [clojure.edn :as edn]
-   [clojure.string :as str]
    [criterium.core :refer [quick-bench]]
-   [util :refer [input resource-reducible]])
-  (:import [java.lang Math]))
-
-(set! *print-length* 20)
+   [util :refer [input]]))
 
 (def lcb \{)
 (def rcb \})
@@ -16,11 +11,7 @@
 
 (defn data
   []
-  (input
-   #_ "day9.txt"
-   "day9-fellshard.txt"
-   #_ "day9-bhauman.txt"
-   ))
+  (read "day9.txt"))
 
 (defn rf
   [{:keys [level score gc

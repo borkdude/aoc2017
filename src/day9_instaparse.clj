@@ -1,50 +1,45 @@
-(ns day9-spec
-  "Solution for day 9 with Spec. Not finished."
-  (:refer-clojure :exclude [ancestors])
+(ns day9-instaparse
+  "Solution for day 9 using Instaparse."
   (:require
-   [clojure.edn :as edn]
-   [clojure.spec.alpha :as s]
-   [clojure.string :as str]
-   [criterium.core :refer [quick-bench]]
-   [util :refer [input resource-reducible]]
-   [instaparse.core :as insta])
-  (:import [java.lang Math]))
-
-(set! *print-length* 20)
+   [util :refer [read]]
+   [instaparse.core :as insta]))
 
 (defn data
   []
-  (input
-   ;; "day9.txt"
-   "day9-fellshard.txt"
-   ;; "day9-bhauman.txt"
-   ))
+  (read "day9.txt"))
 
 (def parse
   (insta/parser
-   (input "day9.grammar")))
+   "GROUP      = <'{'> CHILDREN <'}'> 
+    <CHILDREN> = CHILD*
+    <CHILD>    = (GROUP | GARBAGE) <','?>
+    GARBAGE    = < '<' > ( NORMAL | ESCAPED)* < '>' >
+    <ESCAPED>  = < #'(!.)+' >
+    <NORMAL>   = #'[^!>]+'"))
 
-(defn leaf-weight [depth [tag & children]]
-  (case tag
+(defn tree-weight
+  [depth [node & leafs]]
+  (case node
     :GROUP
     (apply + depth
-           (map #(leaf-weight (inc depth)
-                              %)
-                children))
+           (map #(tree-weight
+                  (inc depth )%)
+                leafs))
     :GARBAGE 0))
 
-(defn garbage-count [[tag & children]]
-  (case tag
+(defn garbage-count
+  [[node & leafs]]
+  (case node
     :GARBAGE
     (apply + (map count
-                  children))
+                  leafs))
     :GROUP
     (apply + (map garbage-count
-                  children))))
+                  leafs))))
 
 (defn part-1
   []
-  (leaf-weight 1 (parse (data))))
+  (tree-weight 1 (parse (data))))
 
 (defn part-2
   []
@@ -55,4 +50,5 @@
 (comment
   (part-1) ;; 20530, fellshard: 17390, bhauman: 13154
   (part-2) ;; 9978,  fellshard: 7825,  bhauman: 6369
+  (time (parse (data))) ;; 380 ms
   )

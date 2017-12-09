@@ -1,12 +1,10 @@
 (ns day7
-  (:refer-clojure :exclude [ancestors])
   (:require
    [clojure.string :as str]
    [clojure.edn :as edn]
    [clojure.set :as set]
    [criterium.core :refer [quick-bench]]
-   [util :refer [input resource-reducible]])
-  (:import [java.lang Math]))
+   [util :refer [resource-reducible]]))
 
 (set! *print-length* 20)
 
