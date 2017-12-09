@@ -1,4 +1,4 @@
-(ns day8
+(ns day9
   (:refer-clojure :exclude [ancestors])
   (:require
    [clojure.edn :as edn]
@@ -19,8 +19,9 @@
   []
   (input
    ;; "day9.txt"
-   ;; "day9-fellshard.txt"
-   "day9-bhauman.txt"))
+   "day9-fellshard.txt"
+   ;; "day9-bhauman.txt"
+   ))
 
 (defn rf [{:keys [level score gc
                   ignore? in-garbage?]
