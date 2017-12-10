@@ -1,7 +1,8 @@
 (ns day10
   (:require
    [clojure.string :as str]
-   [util :refer [read]])
+   [util :refer [read]]
+   [criterium.core :refer [quick-bench]])
   (:import [java.lang Math]))
 
 (defn data
@@ -63,6 +64,6 @@
 ;;;; Scratch
 
 (comment
-  (part-1) ;; 19591
-  (part-2) ;; "62e2204d2ca4f4924f6e7a80f1288786"
+  (quick-bench (part-1)) ;; 19591, 1.3ms
+  (quick-bench (part-2)) ;; "62e2204d2ca4f4924f6e7a80f1288786", 224ms
   )
