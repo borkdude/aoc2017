@@ -9,28 +9,29 @@
 (task-options!
  repl {:eval '(set! *print-length* 20)})
 
+(defn run-day-part
+  [day part]
+  (let [day (format "day%02d" day)
+        sym (symbol day
+                    (str "part-" part))
+        _   (require (symbol day))
+        fn  (resolve sym)]
+    (println (str sym ":") (fn))))
+
 (deftask run-day
   [d day  VAL int "day"
    p part VAL int "part"]
-  (assert day)
-  (let [parts (if part
-                [part]
-                [1 2])]
-    (doseq [p parts]
-      (let [ns  (format "day%02d" day)
-            sym (symbol ns
-                        (str "part-" p))
-            _   (require (symbol ns))
-            fn  (resolve sym)]
-        (println (str sym ":") (fn))))))
+  (with-pass-thru [_]
+    (assert day)
+    (let [parts (if part
+                  [part]
+                  [1 2])]
+      (doseq [p parts]
+        (run-day-part day p)))))
 
 (deftask run-all
   []
   (with-pass-thru [_]
-    (let [days (map #(format "day%02d" %)
-                    (range 1 (inc 10)))]
-      (doseq [ns days
-              :let [_  (require (symbol ns))
-                    p1 (resolve (symbol ns "part-1"))
-                    p2 (resolve (symbol ns "part-2"))]]
-        (println (str ns ":") [(p1) (p2)])))))
+    (doseq [day (range 1 (inc 10))
+            part [1 2]]
+      (run-day-part day part))))
