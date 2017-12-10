@@ -1,12 +1,12 @@
-(ns day9-instaparse
+(ns day09-instaparse
   "Solution for day 9 using Instaparse."
   (:require
-   [util :refer [read]]
+   [util :refer [read-first]]
    [instaparse.core :as insta]))
 
 (defn data
   []
-  (read "day9.txt"))
+  (read-first "day9.txt"))
 
 (def parse
   (insta/parser

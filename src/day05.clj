@@ -1,4 +1,4 @@
-(ns day5
+(ns day05
   (:require [util :refer [resource-reducible]]
             [criterium.core :refer [quick-bench]]))
 

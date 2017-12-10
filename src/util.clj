@@ -11,7 +11,7 @@
       str/trim
       (str/split #"\n")))
 
-(defn read
+(defn read-first
   [f]
   (first (read-lines f)))
 

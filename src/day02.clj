@@ -1,4 +1,4 @@
-(ns day2
+(ns day02
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [util :refer [resource-reducible]]))

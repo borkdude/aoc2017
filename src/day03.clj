@@ -1,4 +1,4 @@
-(ns day3
+(ns day03
   (:import [java.lang Math]))
 
 (def directions

@@ -1,10 +1,10 @@
-(ns day1
+(ns day01
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [util :refer [read]]))
+            [util :refer [read-first]]))
 
 (defn part-1 []
-  (let [txt (read "day1.txt")]
+  (let [txt (read-first "day1.txt")]
     (reduce
      +
      (map
@@ -15,7 +15,7 @@
       (drop 1 (cycle txt))))))
 
 (defn part-2 []
-  (let [txt (read "day1.txt")
+  (let [txt (read-first "day1.txt")
         half (/ (count txt) 2)]
     (reduce
      +

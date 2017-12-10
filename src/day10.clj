@@ -1,21 +1,21 @@
 (ns day10
   (:require
    [clojure.string :as str]
-   [util :refer [read]]
+   [util :refer [read-first]]
    [criterium.core :refer [quick-bench]])
   (:import [java.lang Math]))
 
 (defn data
   []
   (as-> "day10.txt" $
-    (read $)
+    (read-first $)
     (str/split $ #",")
     (mapv #(Integer/parseInt %) $)))
 
 (defn data-part-2
   []
   (as-> "day10.txt" $
-    (read $)
+    (read-first $)
     (mapv byte $)
     (into $ [17, 31, 73, 47, 23])))
 
@@ -24,12 +24,15 @@
 
 (defn transform-nums
   [nums pos l]
-  (let [reverse-positions (map #(mod % (count nums))
-                               (range pos (+ pos l)))
-        mapping (zipmap reverse-positions
-                        (reverse reverse-positions))]
+  (let [reverse-positions
+        (map #(mod % (count nums))
+             (range pos (+ pos l)))
+        mapping
+        (zipmap reverse-positions
+                (reverse reverse-positions))]
     (mapv (fn [pos' v]
-            (get nums (get mapping pos' pos')))
+            (get nums
+                 (get mapping pos' pos')))
           (range)
           nums)))
 
@@ -53,12 +56,17 @@
 (defn part-2
   []
   (let [[sparse-hash _ _]
-        (nth (iterate (partial solve (data-part-2))
-                      [(init-nums) 0 0])
+        (nth (iterate
+              (partial solve (data-part-2))
+              [(init-nums) 0 0])
              64)
-        dense-hash (map #(apply bit-xor %)
-                        (partition 16 sparse-hash))
-        hexed (apply str (map #(format "%x" %) dense-hash))]
+        dense-hash
+        (map #(apply bit-xor %)
+             (partition 16 sparse-hash))
+        hexed
+        (apply str (map
+                    #(format "%02x" %)
+                    dense-hash))]
     hexed))
 
 ;;;; Scratch

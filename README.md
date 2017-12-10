@@ -6,10 +6,14 @@ Solutions mostly in Clojure.
 
 Clone this repo and install [boot](http://boot-clj.com/).
 
-Then:
+Run all completed solutions:
 
-    boot repl  
-```clojure    
-(require 'day1)
-(day1/part-1)
-```
+    boot run-all
+
+or just one day:
+
+    boot run-day -d 1
+
+or just one part of a day:
+
+    boot run-day -d 1 -p 2

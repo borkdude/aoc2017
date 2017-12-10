@@ -1,7 +1,7 @@
-(ns day9-single-pass
+(ns day09-single-pass
   (:require
    [criterium.core :refer [quick-bench]]
-   [util :refer [input]]))
+   [util :refer [read-first]]))
 
 (def lcb \{)
 (def rcb \})
@@ -11,7 +11,7 @@
 
 (defn data
   []
-  (read "day9.txt"))
+  (read-first "day9.txt"))
 
 (defn rf
   [{:keys [level score gc

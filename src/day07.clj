@@ -1,12 +1,10 @@
-(ns day7
+(ns day07
   (:require
    [clojure.string :as str]
    [clojure.edn :as edn]
    [clojure.set :as set]
    [criterium.core :refer [quick-bench]]
    [util :refer [resource-reducible]]))
-
-(set! *print-length* 20)
 
 (defn data
   []

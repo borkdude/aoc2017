@@ -1,4 +1,4 @@
-(ns day4
+(ns day04
   (:require [clojure.java.io :as io]
             [clojure.math.combinatorics :as combo]
             [clojure.string :as str]
@@ -67,6 +67,8 @@
     (map frequencies)
     (filter valid-passphrase?))
    (resource-reducible "day4.txt")))
+
+(def part-2 part-2-frequencies)
 
 ;;;; Scratch
 

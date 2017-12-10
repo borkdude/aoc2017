@@ -1,13 +1,13 @@
-(ns day6
+(ns day06
   (:require
    [clojure.string :as str]
    [criterium.core :refer [quick-bench]]
-   [util :refer [read]])
+   [util :refer [read-first]])
   (:import [java.lang Math]))
 
 (defn data []
   (as-> "day6.txt" $
-    (read $)
+    (read-first $)
     (str/split $ #"\s")
     (mapv #(Integer/parseInt %) $)))
 

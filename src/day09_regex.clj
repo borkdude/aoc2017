@@ -1,15 +1,15 @@
-(ns day9-regex
+(ns day09-regex
   (:require
    [clojure.string :as str]
    [criterium.core :refer [quick-bench]]
-   [util :refer [read resource-reducible]]))
+   [util :refer [read-first]]))
 
 (def lcb \{)
 (def rcb \})
 
 (defn data
   []
-  (read "day9.txt"))
+  (read-first "day9.txt"))
 
 (defn ignore
   [s]
