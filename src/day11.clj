@@ -10,18 +10,24 @@
     (read-first $)
     (str/split $ #",")))
 
-(defn distance
+(set! *warn-on-reflection* true)
+(set! *unchecked-math* :warn-on-boxed)
+
+(defn distance ^long
   [coords]
-  (/ (apply +
-            (map #(Math/abs %)
-                 coords))
+  (/ ^long (apply +
+                  (map
+                   #(Math/abs ^long
+                              %)
+                   coords))
      2))
 
 (defn solve
   "See https://twitter.com/EsthervdSHU/status/940160750303268864/photo/1"
   [input]
   (reduce
-   (fn [[[x y z] max-dist] next-dir]
+   (fn [[[^long x ^long y ^long z]
+         ^long max-dist] next-dir]
      (let [next-coords
            (case next-dir
              "n"  [(inc x) (inc y) z]
@@ -46,7 +52,10 @@
 
 ;;;; Scratch
 
+(apply + (map #(Math/abs ^long %) [1 2 3]))
+
 (comment
-  (part-1) ;; 794
-  (part-2) ;; 1524
-  )
+  (time (part-1)) ;; 794
+  (time (part-2)) ;; 1524
+  
+)
