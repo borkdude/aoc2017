@@ -10,9 +10,6 @@
     (read-first $)
     (str/split $ #",")))
 
-(set! *warn-on-reflection* true)
-(set! *unchecked-math* :warn-on-boxed)
-
 (defn distance ^long
   [coords]
   (/ ^long (apply +
@@ -52,9 +49,9 @@
 
 ;;;; Scratch
 
-(apply + (map #(Math/abs ^long %) [1 2 3]))
-
 (comment
+  (set! *warn-on-reflection* true)
+  (set! *unchecked-math* :warn-on-boxed)
   (time (part-1)) ;; 794
   (time (part-2)) ;; 1524
   

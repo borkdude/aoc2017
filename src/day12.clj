@@ -11,7 +11,7 @@
          (map #(format "[%s]" %1))
          (map edn/read-string)
          (map (fn [[from _arrow & tos]]
-                [from (set tos)])))
+                [from (disj (set tos) from)])))
         (resource-reducible "day12.txt")))
 
 (defn with-indirect-neighbours
@@ -81,7 +81,7 @@
 
 (comment
   (set! *print-length* 20)
-  (time (part-1)) ;; 288, 12ms
+  (time (part-1)) ;; 288, 70ms
   (time (part-2)) ;; 211, 16.8s
   (time (part-2-faster)) ;; 211, 6.6s
   )
