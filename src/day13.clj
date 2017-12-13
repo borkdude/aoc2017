@@ -13,13 +13,13 @@
                 (map
                  (fn [v]
                    (reduce into []
-                           [(range 0 (dec v))
-                            (range (dec v) 0 -1)]))
+                           [(range 0 (dec ^long v))
+                            (range (dec ^long v) 0 -1)]))
                  (vals m)))
         depth (apply max (map first m))]
     (into []
           (map #(get with-ranges %)
-               (range 0 (inc depth))))))
+               (range 0 (inc ^long depth))))))
 
 (defn data
   []
@@ -40,8 +40,10 @@
    picosecond]
   (if-let [layer (get layers picosecond)]
     (let [pos (position layer picosecond)]
-      (if (zero? pos)
-        (* picosecond (inc (/ (count layer) 2)))
+      (if (zero? ^long pos)
+        (* ^long picosecond (inc ^long
+                                 (/ (count layer)
+                                    2)))
         0))
     0))
 
@@ -63,8 +65,8 @@
    (fn [idx]
      (let [layer (get layers idx)
            pos (position layer
-                         (+ idx delay))]
-       (and pos (zero? pos))))
+                         (+ ^long idx ^long delay))]
+       (and pos (zero? ^long pos))))
    (range 0 (count layers))))
 
 (defn part-2
@@ -79,7 +81,12 @@
 
 (comment
   (set! *print-length* 20)
+  (set! *warn-on-reflection* true)
+  (set! *unchecked-math* :warn-on-boxed)
   (time (part-1)) ;; 1580, 1ms
-  (time (part-2))
-  (quick-bench (part-2)) ;; 3943252, with some 3.9s, with find-first 2.25s
+  (time (part-2)) ;; 3943252, 2158ms
+  (quick-bench (part-2)) ;; 3943252, with some 3.9s, with find-first 2.11s
+
+  (time (some #(when (> ^long % 10000000) %) (range))) ;; 558 ms
+  (time (find-first #(> ^long % 10000000)    (range))) ;; 95 ms
   )
