@@ -2,7 +2,9 @@
   (:require
    [clojure.edn :as edn]
    [clojure.string :as str]
-   [util :refer [resource-reducible parse-int find-first]]))
+   [criterium.core :refer [quick-bench]]
+   [util :refer [resource-reducible
+                 parse-int find-first]]))
 
 (defn process-data
   [m]
@@ -10,9 +12,9 @@
         (zipmap (keys m)
                 (map
                  (fn [v]
-                   (vec
-                    (concat (range 0 (dec v))
-                            (range (dec v) 0 -1))))
+                   (reduce into []
+                           [(range 0 (dec v))
+                            (range (dec v) 0 -1)]))
                  (vals m)))
         depth (apply max (map first m))]
     (into []
@@ -59,10 +61,10 @@
   [layers delay]
   (find-first
    (fn [idx]
-     (let [layer (get layers idx)]
-       (let [pos (position layer
-                           (+ idx delay))]
-         (and pos (zero? pos)))))
+     (let [layer (get layers idx)
+           pos (position layer
+                         (+ idx delay))]
+       (and pos (zero? pos))))
    (range 0 (count layers))))
 
 (defn part-2
@@ -78,5 +80,6 @@
 (comment
   (set! *print-length* 20)
   (time (part-1)) ;; 1580, 1ms
-  (time (part-2)) ;; 3943252, 2s
+  (time (part-2))
+  (quick-bench (part-2)) ;; 3943252, with some 3.9s, with find-first 2.25s
   )

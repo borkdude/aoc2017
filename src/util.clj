@@ -31,3 +31,21 @@
 (defn resource-reducible [path]
   (let [rdr (io/reader (io/resource path))]
     (lines-reducible rdr)))
+
+(defn parse-int
+  [s]
+  (Integer/parseInt s))
+
+(defn find-first
+  [pred vals]
+  (reduce
+   (fn [_ v]
+     (when (pred v)
+       (reduced v)))
+   nil
+   vals))
+
+(defn spy
+  [x]
+  (println x)
+  x)
