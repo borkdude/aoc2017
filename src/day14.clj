@@ -13,13 +13,10 @@
 
 (defn row
   [key n]
-  (let [kh
-        (knot-hash (str key "-" n))]
-    (apply
-     str
-     (->> kh
-          (map #(parse-int (str %) 16))
-          (map #(cl-format nil "~4,'0',B" %))))))
+  (apply str
+   (->> (knot-hash (str key "-" n))
+        (map #(parse-int (str %) 16))
+        (map #(cl-format nil "~4,'0',B" %)))))
 
 (defn count-ones
   [s]
