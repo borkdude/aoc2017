@@ -6,17 +6,20 @@
    [criterium.core :refer [quick-bench]]
    [day10 :refer [knot-hash]]
    [day12 :refer [bhauman-group]]
-   [util :refer [parse-int]]))
+   [util :refer [parse-int]]
+   [net.cgrand.xforms.rfs :as rfs]))
 
 (def hash-key "jzgqcdpd")
 (def grid-size 128)
 
 (defn row
   [key n]
-  (apply str
-   (->> (knot-hash (str key "-" n))
-        (map #(parse-int (str %) 16))
-        (map #(cl-format nil "~4,'0',B" %)))))
+  (transduce
+   (comp
+    (map #(parse-int (str %) 16))
+    (map #(cl-format nil "~4,'0',B" %)))
+   rfs/str
+   (knot-hash (str key "-" n))))
 
 (defn count-ones
   [s]
