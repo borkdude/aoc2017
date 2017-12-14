@@ -6,7 +6,7 @@
    [criterium.core :refer [quick-bench]]
    [day10 :refer [knot-hash]]
    [day12 :refer [bhauman-group]]
-   [util :refer [parse-int char-at]]))
+   [util :refer [parse-int]]))
 
 (def hash-key "jzgqcdpd")
 (def grid-size 128)
@@ -15,12 +15,11 @@
   [key n]
   (let [kh
         (knot-hash (str key "-" n))]
-    (transduce
-     (comp
-      (map #(parse-int (str %) 16))
-      (map #(cl-format nil "~4,'0',B" %)))
+    (apply
      str
-     kh)))
+     (->> kh
+          (map #(parse-int (str %) 16))
+          (map #(cl-format nil "~4,'0',B" %))))))
 
 (defn count-ones
   [s]
@@ -88,7 +87,8 @@
   (set! *print-length* 20)
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
-  (time (part-1)) ;; 8074, ~9s
+  (time (part-1)) ;; 8074, ~9s, knot-hash is a bit slow, we could
+                  ;; optimize it later
   (def grid (mk-grid hash-key grid-size))
   (time (part-2 grid)) ;; 1212, ~1.6s
   )
