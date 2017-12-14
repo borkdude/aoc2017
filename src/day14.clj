@@ -44,7 +44,7 @@
     (count-ones grid)))
 
 (defn neighbours
-  [grid ^long pos ^long grid-size]
+  [^String grid ^long pos ^long grid-size]
   (let [row (quot pos grid-size)
         col (rem  pos grid-size)]
     (for [[^long dx ^long dy] [[-1 0] [1 0] [0 -1] [0 1]]
@@ -52,18 +52,19 @@
                 row' (+ row dy)
                 pos' (+ col' (* grid-size row'))]
           :when (and
-                 (= \1 (char-at grid pos'))
                  (nat-int? row')
                  (nat-int? col')
-                 (< col' grid-size))]
+                 (< col' grid-size)
+                 (< pos' (count grid))
+                 (= \1 (.charAt grid pos')))]
       pos')))
 
 (defn mk-graph
-  [grid grid-size]
+  [^String grid grid-size]
   (into {}
         (keep
          (fn [idx]
-           (when (= \1 (char-at grid idx))
+           (when (= \1 (.charAt grid idx))
              [idx (set (neighbours grid idx grid-size))]))
          (range 0 (count grid)))))
 

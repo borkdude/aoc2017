@@ -39,10 +39,6 @@
    (try (Integer/parseInt s b)
         (catch Exception e nil))))
 
-(defn char-at [^String s n]
-  (try (.charAt s n)
-       (catch Exception e nil)))
-
 (defn find-first
   [pred vals]
   (reduce
