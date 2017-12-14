@@ -17,7 +17,7 @@
         (knot-hash (str key "-" n))]
     (transduce
      (comp
-      (keep #(parse-int (str %) 16))
+      (map #(parse-int (str %) 16))
       (map #(cl-format nil "~4,'0',B" %)))
      str
      kh)))
@@ -32,7 +32,7 @@
    0
    s))
 
-(defn grid
+(defn mk-grid
   [key grid-size]
   (reduce str
           (map #(row key %)
@@ -40,10 +40,8 @@
 
 (defn part-1
   []
-  (let [g (grid hash-key grid-size)]
-    ;; we wrap the grid in a delay, because we don't want to print the
-    ;; whole thing if *print-length* isn't set
-    [(count-ones g) (delay g)]))
+  (let [grid (mk-grid hash-key grid-size)]
+    (count-ones grid)))
 
 (defn neighbours
   [grid ^long pos ^long grid-size]
@@ -58,9 +56,9 @@
                  (nat-int? row')
                  (nat-int? col')
                  (< col' grid-size))]
-      pos)))
+      pos')))
 
-(defn graph
+(defn mk-graph
   [grid grid-size]
   (into {}
         (keep
@@ -70,16 +68,18 @@
          (range 0 (count grid)))))
 
 (defn count-groups
-  [s grid-size]
-  (let [graph (graph s grid-size)]
+  [grid grid-size]
+  (let [graph (mk-graph grid grid-size)]
     (count
      (distinct (map #(bhauman-group graph %)
                     (keys graph))))))
 
 (defn part-2
-  ([] (part-2 @(second (part-1))))
-  ([part-1]
-   (count-groups part-1 grid-size)))
+  ([]
+   (part-2 (mk-grid hash-key grid-size)))
+  ([grid]
+   (count-groups grid
+                 grid-size)))
 
 ;;;; Scratch
 
@@ -87,6 +87,7 @@
   (set! *print-length* 20)
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
-  (def p1 (time (part-1))) ;; 8074, ~9s
-  (time (part-2 @(second p1))) ;; 1212, ~1.6s
+  (time (part-1)) ;; 8074, ~9s
+  (def grid (mk-grid hash-key grid-size))
+  (time (part-2 grid)) ;; 1212, ~1.6s
   )
