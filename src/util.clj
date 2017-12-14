@@ -33,8 +33,15 @@
     (lines-reducible rdr)))
 
 (defn parse-int
-  [s]
-  (Integer/parseInt s))
+  ([s]
+   (parse-int s 10))
+  ([s b]
+   (try (Integer/parseInt s b)
+        (catch Exception e nil))))
+
+(defn char-at [^String s n]
+  (try (.charAt s n)
+       (catch Exception e nil)))
 
 (defn find-first
   [pred vals]

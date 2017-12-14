@@ -15,9 +15,7 @@
 (defn data-part-2
   []
   (as-> "day10.txt" $
-    (read-first $)
-    (mapv byte $)
-    (into $ [17, 31, 73, 47, 23])))
+    (read-first $)))
 
 (defn init-nums
   [] (into [] (range 0 256)))
@@ -53,21 +51,24 @@
                [(init-nums) 0 0])]
     (apply * (take 2 nums))))
 
+(defn knot-hash [s]
+  (as-> s $
+    (mapv byte $)
+    (into $ [17, 31, 73, 47, 23])
+    (first
+     (nth (iterate
+           (partial solve $)
+           [(init-nums) 0 0])
+          64))
+    (map #(apply bit-xor %)
+         (partition 16 $))
+    (apply str (map
+                #(format "%02x" %)
+                $))))
+
 (defn part-2
   []
-  (let [[sparse-hash _ _]
-        (nth (iterate
-              (partial solve (data-part-2))
-              [(init-nums) 0 0])
-             64)
-        dense-hash
-        (map #(apply bit-xor %)
-             (partition 16 sparse-hash))
-        hexed
-        (apply str (map
-                    #(format "%02x" %)
-                    dense-hash))]
-    hexed))
+  (knot-hash (data-part-2)))
 
 ;;;; Scratch
 

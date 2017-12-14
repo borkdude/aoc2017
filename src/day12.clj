@@ -77,6 +77,18 @@
     (vals
      (transitive-neighbours-all (data))))))
 
+;;;; Borrowed from https://github.com/bhauman/advent-of-clojure-2016/blob/master/src/advent_of_clojure_2017/day12.clj#L23.
+;;;; All glory to Bruce.
+
+(defn bhauman-group
+  [idx root]
+  (into #{}
+        (tree-seq (let [seen (atom #{})]
+                    (fn [x] (when-not (@seen x)
+                              (swap! seen conj x))))
+                  idx
+                  root)))
+
 ;;;; Scratch
 
 (comment
