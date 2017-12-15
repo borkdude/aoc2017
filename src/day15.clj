@@ -20,11 +20,6 @@
                    ^long divider))
             seed)))
 
-(defn lowest-16-bits
-  [^long n]
-  (unchecked-short
-   (bit-and n 0xffff)))
-
 (defn count-same-bits
   [seed-a pred-a
    seed-b pred-b
@@ -42,10 +37,10 @@
       (recur (rest seq-a)
              (rest seq-b)
              (inc n)
-             (if (= (lowest-16-bits
-                     (first seq-a))
-                    (lowest-16-bits
-                     (first seq-b)))
+             (if (== (unchecked-short
+                      (first seq-a))
+                     (unchecked-short
+                      (first seq-b)))
                (inc same-bits)
                same-bits)))))
 
