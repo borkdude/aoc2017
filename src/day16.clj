@@ -34,17 +34,15 @@
 (defn spin
   [progs ^long n]
   (let [c (count progs)
-        r (mod (- c n) c)]
+        r (- c n)]
     (into (subvec progs r c)
           (subvec progs 0 r))))
 
 (defn exchange
   [progs x y]
-  (let [val-x (progs x)
-        val-y (progs y)]
-    (-> progs
-        (assoc x val-y)
-        (assoc y val-x))))
+  (-> progs
+      (assoc x (progs y))
+      (assoc y (progs x))))
 
 (defn partner
   [^clojure.lang.PersistentVector progs
