@@ -14,7 +14,7 @@
 
 (def parse
   (insta/parser
-   "<INPUT>       = (INSTRUCTION <','>)+ INSTRUCTION 
+   "<INPUT>       = INSTRUCTION (<','> INSTRUCTION)*
     <INSTRUCTION> = SPIN | EXCHANGE | PARTNER
     SPIN          = <'s'> POSITION
     EXCHANGE      = <'x'> POSITION <'/'> POSITION
@@ -89,7 +89,7 @@
 
 (defn parse-args
   [s]
-  (str/split $ #"/"))
+  (str/split s #"/"))
 
 (defn parse-data2
   [d]
@@ -115,7 +115,7 @@
   (set! *print-length* 20)
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
-  (quick-bench (def parsed1 (doall (parse-data (data)))))  ;; ~842ms
+  (quick-bench (def parsed1 (doall (parse-data (data)))))  ;; ~582ms
   (quick-bench (def parsed2 (doall (parse-data2 (data))))) ;; ~7.8ms
   (= parsed1 parsed2) ;; true
   (quick-bench (part-1 programs parsed1)) ;; ~7ms,   "olgejankfhbmpidc"
