@@ -1,12 +1,12 @@
 (ns day16
   (:require
-   [clojure.edn :as edn]
-   [clojure.string :as str]
-   [instaparse.core :as insta]
-   [criterium.core :refer [quick-bench]]
-   [util :refer [read-first parse-int]]
    [blancas.kern.core :as k]
    [blancas.kern.lexer.basic :as l]
+   [clojure.edn :as edn]
+   [clojure.string :as str]
+   [criterium.core :refer [quick-bench]]
+   [instaparse.core :as insta]
+   [util :refer [read-first parse-int]]
    ))
 
 (def programs (vec "abcdefghijklmnop"))
@@ -100,7 +100,7 @@
    (fn [expr]
      (case (first expr)
        \s [:SPIN (parse-int
-                  (but-first-char expr))] 
+                  (but-first-char expr))]
        \x (into [:EXCHANGE]
                 (mapv parse-int
                       (parse-args
@@ -114,26 +114,32 @@
 
 ;;;; Kern parser
 
-(def partner (k/bind [_  (k/sym* \p)
-                      p1 k/letter
-                      _ (k/sym* \/)
-                      p2 k/letter]
-                     (k/return [:PARTNER p1 p2])))
+(def partner
+  (k/bind [_  (k/sym* \p)
+           p1 k/letter
+           _ (k/sym* \/)
+           p2 k/letter]
+          (k/return [:PARTNER p1 p2])))
 
-(def exchange (k/bind [_ (k/sym* \x)
-                       pos1 k/dec-num
-                       _ (k/sym* \/)
-                       pos2 k/dec-num]
-                      (k/return [:EXCHANGE pos1 pos2])))
+(def exchange
+  (k/bind [_ (k/sym* \x)
+           pos1 k/dec-num
+           _ (k/sym* \/)
+           pos2 k/dec-num]
+          (k/return [:EXCHANGE pos1 pos2])))
 
-(def spin (k/bind [_ (k/sym* \s) n k/dec-num]
-                  (k/return [:SPIN n])))
+(def spin
+  (k/bind [_ (k/sym* \s) n k/dec-num]
+          (k/return [:SPIN n])))
 
-(def instruction (k/<|> spin exchange partner))
+(def instruction
+  (k/<|> spin exchange partner))
 
-(def input (k/sep-by1 (k/sym* \,) instruction))
+(def input
+  (k/sep-by1 (k/sym* \,) instruction))
 
-(defn parse-data3 [d]
+(defn parse-data3
+  [d]
   (:value (k/parse-data input d)))
 
 ;;;; Scratch
@@ -142,7 +148,6 @@
   (set! *print-length* 20)
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
-  (time (def parsed1 (doall (parse-data (data)))))
   (quick-bench (def parsed1 (doall (parse-data (data)))))  ;; ~582ms
   (quick-bench (def parsed2 (doall (parse-data2 (data))))) ;; ~7.8ms
   (quick-bench (def parsed3 (parse-data3 (data))))         ;; ~113ms
