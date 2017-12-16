@@ -81,13 +81,43 @@
          remaining (rem 1000000000 n-repeat)]
      (apply str (nth iters remaining)))))
 
+;;;; For comparison, a handwritten parser
+
+(defn but-first-char
+  [s]
+  (subs s 1 (count s)))
+
+(defn parse-args
+  [s]
+  (str/split $ #"/"))
+
+(defn parse-data2
+  [d]
+  (map
+   (fn [expr]
+     (case (first expr)
+       \s [:SPIN (parse-int
+                  (but-first-char expr))] 
+       \x (into [:EXCHANGE]
+                (mapv parse-int
+                      (parse-args
+                       (but-first-char expr))))
+       \p (into [:PARTNER]
+                (mapv
+                 first
+                 (parse-args
+                  (but-first-char expr))))))
+   (str/split d #",")))
+
 ;;;; Scratch
 
 (comment
   (set! *print-length* 20)
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
-  (quick-bench (def parsed (parse-data (data)))) ;; ~842ms
-  (quick-bench (part-1 programs parsed))         ;; ~7ms,   "olgejankfhbmpidc"
-  (quick-bench (part-2 programs parsed))         ;; ~422ms, "gfabehpdojkcimnl"
+  (quick-bench (def parsed1 (doall (parse-data (data)))))  ;; ~842ms
+  (quick-bench (def parsed2 (doall (parse-data2 (data))))) ;; ~7.8ms
+  (= parsed1 parsed2) ;; true
+  (quick-bench (part-1 programs parsed1)) ;; ~7ms,   "olgejankfhbmpidc"
+  (quick-bench (part-2 programs parsed1)) ;; ~422ms, "gfabehpdojkcimnl"
   )
