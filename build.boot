@@ -3,7 +3,8 @@
                  [org.clojure/math.combinatorics "0.1.4"]
                  [net.cgrand/xforms "0.15.0"]
                  [criterium "0.4.4"]
-                 [instaparse "1.4.8"]]
+                 [instaparse "1.4.8"]
+                 [org.blancas/kern "1.1.0"]]
  :resource-paths #{"resources" "src"})
 
 (task-options!

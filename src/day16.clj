@@ -4,7 +4,10 @@
    [clojure.string :as str]
    [instaparse.core :as insta]
    [criterium.core :refer [quick-bench]]
-   [util :refer [read-first parse-int]]))
+   [util :refer [read-first parse-int]]
+   [blancas.kern.core :as k]
+   [blancas.kern.lexer.basic :as l]
+   ))
 
 (def programs (vec "abcdefghijklmnop"))
 
@@ -109,15 +112,41 @@
                   (but-first-char expr))))))
    (str/split d #",")))
 
+;;;; Kern parser
+
+(def partner (k/bind [_  (k/sym* \p)
+                      p1 k/letter
+                      _ (k/sym* \/)
+                      p2 k/letter]
+                     (k/return [:PARTNER p1 p2])))
+
+(def exchange (k/bind [_ (k/sym* \x)
+                       pos1 k/dec-num
+                       _ (k/sym* \/)
+                       pos2 k/dec-num]
+                      (k/return [:EXCHANGE pos1 pos2])))
+
+(def spin (k/bind [_ (k/sym* \s) n k/dec-num]
+                  (k/return [:SPIN n])))
+
+(def instruction (k/<|> spin exchange partner))
+
+(def input (k/sep-by1 (k/sym* \,) instruction))
+
+(defn parse-data3 [d]
+  (:value (k/parse-data input d)))
+
 ;;;; Scratch
 
 (comment
   (set! *print-length* 20)
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
+  (time (def parsed1 (doall (parse-data (data)))))
   (quick-bench (def parsed1 (doall (parse-data (data)))))  ;; ~582ms
   (quick-bench (def parsed2 (doall (parse-data2 (data))))) ;; ~7.8ms
-  (= parsed1 parsed2) ;; true
+  (quick-bench (def parsed3 (parse-data3 (data))))         ;; ~113ms
+  (= parsed1 parsed2 parsed3) ;; true
   (quick-bench (part-1 programs parsed1)) ;; ~7ms,   "olgejankfhbmpidc"
   (quick-bench (part-2 programs parsed1)) ;; ~422ms, "gfabehpdojkcimnl"
   )
