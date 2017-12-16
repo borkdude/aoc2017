@@ -89,5 +89,5 @@
   (set! *unchecked-math* :warn-on-boxed)
   (quick-bench (def parsed (parse-data (data)))) ;; ~842ms
   (quick-bench (part-1 programs parsed))         ;; ~7ms,   "olgejankfhbmpidc"
-  (quick-bench (part-2 programs parsed))         ;; ~464ms, "gfabehpdojkcimnl"
+  (quick-bench (part-2 programs parsed))         ;; ~422ms, "gfabehpdojkcimnl"
   )
