@@ -21,13 +21,13 @@
   ;; here we only have to keep track of the second position
   [^long step-size ^long n]
   (reduce
-   (fn [[buffer ^long pos] ^long v]
+   (fn [[pos-1 ^long pos] ^long v]
      (let [pos' (inc ^long (mod (+ pos step-size) v))]
        [(if (= 1 pos')
-          (assoc buffer 1 v)
-          buffer)
+          v
+          pos-1)
         pos']))
-   [[0 nil] 0]
+   [nil 0]
    (rest (range (inc n)))))
 
 (defn part-1
@@ -39,9 +39,7 @@
 
 (defn part-2
   ([]
-   (let [buffer
-         (first (solve2 354 50000000))]
-     (second buffer))))
+   (first (solve2 354 50000000))))
 
 ;;;; Scratch
 
@@ -50,5 +48,5 @@
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
   (time (part-1)) ;; ~100 ms, 2000 
-  (time (part-2)) ;; ~2.7s, 10242889  
+  (time (part-2)) ;; ~2s, 10242889  
   )
