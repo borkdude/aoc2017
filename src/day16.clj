@@ -154,4 +154,14 @@
   (= parsed1 parsed2 parsed3) ;; true
   (quick-bench (part-1 programs parsed1)) ;; ~7ms,   "olgejankfhbmpidc"
   (quick-bench (part-2 programs parsed1)) ;; ~422ms, "gfabehpdojkcimnl"
+
+  (:value
+   (k/parse (k/<$>
+             (fn [[p1 p2]] [:EXCHANGE p1 p2])
+             (k/>> (k/sym* \x)
+                   (k/<*> k/dec-num
+                          (k/>> (k/sym* \/) k/dec-num))))
+            "x10/6")) ;;=> [:EXCHANGE 10 6]
+
+  (k/sep-by1)
   )
