@@ -18,6 +18,13 @@
    [[0] 0]
    (rest (range (inc n)))))
 
+(defn part-1
+  ([]
+   (let [buffer (first (solve 354 2017))
+         i (.indexOf ^clojure.lang.PersistentVector
+                     buffer 2017)]
+     (get buffer (inc i)))))
+
 (defn solve2
   ;; here we only have to keep track of the second position
   [^long step-size ^long n]
@@ -30,13 +37,6 @@
         pos']))
    [nil 0]
    (rest (range (inc n)))))
-
-(defn part-1
-  ([]
-   (let [buffer (first (solve 354 2017))
-         i (.indexOf ^clojure.lang.PersistentVector
-                     buffer 2017)]
-     (get buffer (inc i)))))
 
 (defn part-2
   ([]
