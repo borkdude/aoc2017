@@ -1,6 +1,7 @@
 (ns day17)
 
-(defn insert [vs pos v]
+(defn insert
+  [vs pos v]
   (-> 
    (into (subvec vs 0 pos)
          [v])
