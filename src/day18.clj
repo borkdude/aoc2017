@@ -101,28 +101,43 @@
 
 (defn loop-until-wait
   [instructions prog]
-  (loop [p prog]
+  (loop [p (next-state instructions prog)]
     (if (:waiting? p)
       p
       (recur (next-state instructions p)))))
 
-#_(defn print-q [q]
-  (pr-str (into [] q)))
+(defn print-qs [& qs]
+  (map #(pr-str (into [] %)) qs))
 
 (defn next-state'
   [instructions iter progs]
   (let [[p0 p1] progs
+        ;;_ (println "p0 in out" (print-qs (:in p0) (:out p0)))
+        ;;_ (println "p1 in out" (print-qs (:in p1) (:out p1)))
+ 
         p0 (loop-until-wait instructions p0)
+        _ (assert (empty? (:in p1)))
+        ;;_ (println "p0 in out" (print-qs (:in p0) (:out p0)))
+        ;;_ (println "p1 in out" (print-qs (:in p1) (:out p1)))
 
         ;; transfer p0 out to p1 in
         p1 (assoc p1 :in (:out p0))
         p0 (assoc p0 :out (clojure.lang.PersistentQueue/EMPTY))
+        ;;_ (println "after transfer")
+        ;;_ (println "p0 in out" (print-qs (:in p0) (:out p0)))
+        ;;_ (println "p1 in out" (print-qs (:in p1) (:out p1)))
         
         p1 (loop-until-wait instructions p1)
+        _ (assert (empty? (:in p0)))
 
         ;; transfer p1 out to p0 in, for next iteration       
         p0 (assoc p0 :in (:out p1))
-        p1 (assoc p1 :out (clojure.lang.PersistentQueue/EMPTY))]
+        p1 (assoc p1 :out (clojure.lang.PersistentQueue/EMPTY))
+
+        ;;_ (println "after transfer")
+        ;;_ (println "p0 in out" (print-qs (:in p0) (:out p0)))
+        ;;_ (println "p1 in out" (print-qs (:in p1) (:out p1)))
+        ]
     [p0 p1]))
 
 (defn program
@@ -141,11 +156,13 @@
          [(program 0)
           (program 1)]]
     (let [[p0 p1] progs]
-      (if (or (> iters 500000000)
+      (if (or #_(> iters 1 #_500000000)
               (and (:waiting? p0)
                    (:waiting? p1)
                    (empty? (:in p0))
-                   (empty? (:in p1))))
+                   (empty? (:in p1))
+                   (empty? (:out p0))
+                   (empty? (:out p1))))
         [iters
          (:waiting? p0)
          (:waiting? p1)
@@ -173,7 +190,7 @@
     ;; temp hack for now
     (reset! p1-sending 0)
     (solve2 (data)))
-  @p1-sending ;; 127, too low
+  @p1-sending ;; 127, too low, should be around 7000-8000
   ) 
 
 ;;;; Scratch
