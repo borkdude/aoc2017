@@ -64,6 +64,8 @@
 (defn next-state
   [instructions {:keys [id ctr registers in sends] :as p}]
   (let [[instr reg arg] (get instructions ctr)
+        ;; I'll update the counter just in case I forget.
+        ;; Thanks mfikes
         p (update p :ctr inc)]
     (case instr
       set (assoc-reg p reg (get-val registers arg))
