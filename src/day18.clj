@@ -90,9 +90,11 @@
           (swap! p1-sending inc))
         (update p :out conj v))
       rcv (if-let [v (peek in)]
-            (assoc p
-                   :in (pop in)
-                   :waiting? false)
+            (->
+             (assoc p
+                    :in (pop in)
+                    :waiting? false)
+             (assoc-reg reg v))
             (assoc p
                    :waiting? true
                    :ctr ctr)))))
