@@ -1,10 +1,11 @@
-(ns template
+(ns day18
   (:require
    [clojure.edn :as edn]
    [clojure.string :as str]
    [criterium.core :refer [quick-bench]]
    [util :refer [resource-reducible
-                 parse-int find-first]]))
+                 parse-int find-first
+                 print-changed]]))
 
 (defn data
   []
@@ -14,166 +15,164 @@
          (map edn/read-string))
         (resource-reducible "day18.txt")))
 
-(comment
-  (next '(1 2 3)))
-
 (defn get-val
   [registers reg]
   (if (symbol? reg)
     (get registers reg 0) reg))
 
+(defn assoc-reg
+  [prog reg val]
+  (update prog :registers assoc reg val))
+
 (defn solve1
   [instructions]
-  (loop [ctr 0
-         registers {}
-         last-played nil]
-    (let [[instr reg arg] (get instructions ctr)]
-      #_(println ctr instr reg arg registers)
-      (case instr
-        set (recur (inc ctr)
-                   (assoc registers reg
-                          (get-val registers arg))
-                   last-played)
-        mul (recur
-             (inc ctr)
-             (assoc registers reg
-                    (* (get registers reg 0)
-                       (get-val registers arg)))
-             last-played)
-        add (recur
-             (inc ctr)
-             (assoc registers reg
-                    (+ (get registers reg 0)
-                       (get-val registers arg)))
-             last-played)
-        jgz (let [x-val (get registers reg 0)
-                  y-val (get-val registers arg)
-                  offset (if (zero? x-val)
-                           1
-                           y-val)]
-              (recur (+ ctr offset)
-                     registers
-                     last-played))
-        mod (recur (inc ctr)
-                   (assoc registers reg
-                          (mod (get registers reg 0)
-                               (get-val registers arg)))
-                   last-played)
-        snd (let [v (get-val registers reg)]
-              (recur (inc ctr)
-                     registers
-                     v))
-        rcv last-played #_(recur (inc ctr)
-                                 (assoc registers reg
-                                        last-played)
-                                 last-played)
-        ))))
+  (loop [{:keys [ctr
+                 registers
+                 recovered?]
+          :as p}
+         {:ctr 0
+          :registers {}
+          :recovered? false
+          :last-played nil}]
+    (if recovered?
+      p
+      (recur
+       (let [[instr reg arg] (get instructions ctr)
+             p (update p :ctr inc)]
+         (case instr
+           set (assoc-reg p reg (get-val registers arg))
+           mul (assoc-reg p reg (* (get registers reg 0)
+                                   (get-val registers arg)))
+           add (assoc-reg p reg (+ (get registers reg 0)
+                                   (get-val registers arg)))
+           jgz (let [x-val (get-val registers reg)
+                     y-val (get-val registers arg)
+                     offset (if (zero? x-val)
+                              1
+                              y-val)]
+                 (assoc p :ctr (+ ctr offset)))
+           mod
+           (assoc-reg p reg (mod (get registers reg 0)
+                                 (get-val registers arg)))
+           snd (assoc p :last-played (get-val registers reg))
+           rcv (assoc p :recovered? true)))))))
 
 (defn part-1
   []
-  (solve (data)))
+  (:last-played (solve1 (data))))
 
-(comment
-  (peek (conj (clojure.lang.PersistentQueue/EMPTY) 1 2))
-  (peek (pop (conj (clojure.lang.PersistentQueue/EMPTY) 1 2))))
-
+;; temp hack
+(def p1-sending (atom 0))
 
 (defn next-state
-  [instructions {:keys [id ctr registers last-played buf0 buf1 waiting?] :as p}]
-  (let [[instr reg arg] (get instructions ctr)]
+  [instructions {:keys [id ctr registers in out waiting?] :as p}]
+  (let [[instr reg arg] (get instructions ctr)
+        p (update p :ctr inc)]
     (case instr
-      set (->
-           p
-           (update :ctr inc)
-           (assoc  :registers reg (get-val registers arg)))
-      mul (->
-           p
-           (update :ctr inc)
-           (assoc  :registers reg (* (get registers reg 0)
-                                     (get-val registers arg))))
-      add (->
-           p
-           (update :ctr inc)
-           (assoc  :registers reg (+ (get registers reg 0)
-                                     (get-val registers arg))))
-      jgz (let [x-val (get registers reg 0)
+      set (assoc-reg p reg (get-val registers arg))
+      mul (assoc-reg p reg (* (get registers reg 0)
+                              (get-val registers arg)))
+      add (assoc-reg p reg (+ (get registers reg 0)
+                              (get-val registers arg)))
+      jgz (let [x-val (get-val registers reg)
                 y-val (get-val registers arg)
                 offset (if (zero? x-val)
                          1
                          y-val)]
-            (-> p
-                (update :ctr + offset)))
-      mod (-> p
-              (update :ctr inc)
-              (assoc :registers reg
-                     (mod (get registers reg 0)
-                          (get-val registers arg))))
+            (assoc p :ctr (+ ctr offset)))
+      mod
+      (assoc-reg p reg (mod (get registers reg 0)
+                            (get-val registers arg)))
       snd
       (let [v (get-val registers reg)]
-        (->
-         (if (zero? id)
-           (update p
-                   :buf0
-                   conj v)
-           (update p
-                   :buf1
-                   conj v))
-         (update :ctr inc)))
-      rcv
-      (let [[v new-buf]
-            (if (zero? id)
-              [(peek buf1) (pop buf1)]
-              [(peek buf0) (pop buf0)])]
-        (if v
-          (->
-           (if (zero? id)
-             (assoc p :buf1 new-buf)
-             (assoc p :buf2 new-buf))
-           (assoc :registers reg v
-                  :waiting?  false))
-          (assoc p :waiting? true))
-        )
-      )))
+        ;; temp hack to count p1 sending
+        (when (= id 1)
+          (swap! p1-sending inc))
+        (update p :out conj v))
+      rcv (if-let [v (peek in)]
+            (assoc p
+                   :in (pop in)
+                   :waiting? false)
+            (assoc p
+                   :waiting? true
+                   :ctr ctr)))))
+
+(defn loop-until-wait
+  [instructions prog]
+  (loop [p prog]
+    (if (:waiting? p)
+      p
+      (recur (next-state instructions p)))))
+
+#_(defn print-q [q]
+  (pr-str (into [] q)))
+
+(defn next-state'
+  [instructions iter progs]
+  (let [[p0 p1] progs
+        p0 (loop-until-wait instructions p0)
+
+        ;; transfer p0 out to p1 in
+        p1 (assoc p1 :in (:out p0))
+        p0 (assoc p0 :out (clojure.lang.PersistentQueue/EMPTY))
+        
+        p1 (loop-until-wait instructions p1)
+
+        ;; transfer p1 out to p0 in, for next iteration       
+        p0 (assoc p0 :in (:out p1))
+        p1 (assoc p1 :out (clojure.lang.PersistentQueue/EMPTY))]
+    [p0 p1]))
+
+(defn program
+  [id]
+  {:id id
+   :ctr 0
+   :registers {'p id}
+   :in (clojure.lang.PersistentQueue/EMPTY)
+   :out (clojure.lang.PersistentQueue/EMPTY) 
+   :waiting? false})
 
 (defn solve2
   [instructions]
-  (loop [{:keys [id ctr registers last-played buf0 waiting?] :as p0}
-         {:id 0
-          :ctr 0
-          :registers {'p 0}
-          :last-played nil
-          :buf0 (clojure.lang.PersistentQueue/EMPTY)
-          :waiting? false}
-         {:keys [id ctr registers last-played buf1 waiting?] :as p1}
-         {:id 2
-          :ctr 0
-          :registers {'p 0}
-          :last-played nil
-          :buf1 (clojure.lang.PersistentQueue/EMPTY)
-          :waiting? false}]
-    (cond
-      (and (:waiting? p0) (:waiting? p1))
-      ;; TODO
-      (count buf0)
-      (:waiting? p0)
-      (recur (next-state instructions
-                         (assoc p0 :buf1 buf1))
-             p1)
-      (:waiting? p1)
-      (recur p0
-             (next-state instructions
-                         (assoc p0 :buf0 buf0)))
-      :else
-      (recur
-       (next-state instructions
-                   p0)
-       (next-state instructions
-                   p1))
-      )
-    ))
+  (loop [iters 0
+         progs
+         [(program 0)
+          (program 1)]]
+    (let [[p0 p1] progs]
+      (if (or (> iters 500000000)
+              (and (:waiting? p0)
+                   (:waiting? p1)
+                   (empty? (:in p0))
+                   (empty? (:in p1))))
+        [iters
+         (:waiting? p0)
+         (:waiting? p1)
+         (count (:in p0))
+         (count (:in p1))
+         (count (:out p0))
+         (count (:out p1))]
+        (do
+          (recur
+           (inc iters)
+           (next-state' instructions iters progs)))))))
+
+(def example-data
+  '[[snd 1]
+    [snd 2]
+    [snd p]
+    [rcv a]
+    [rcv b]
+    [rcv c]
+    [rcv d]])
 
 (defn part-2
-  [])
+  []
+  (do
+    ;; temp hack for now
+    (reset! p1-sending 0)
+    (solve2 (data)))
+  @p1-sending ;; 127, too low
+  ) 
 
 ;;;; Scratch
 
@@ -182,6 +181,5 @@
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
   (time (part-1)) ;; 3188, 2ms 
-  (time (part-2)) 
-  (quick-bench (part-2)) 
+  (time (part-2)) ;; 127, incorrect 
   )

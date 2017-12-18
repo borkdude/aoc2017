@@ -52,3 +52,9 @@
   [x]
   (println x)
   x)
+
+(let [last-msg (atom nil)]
+  (defn print-changed [& args]
+    (when (not= args @last-msg)
+      (apply println args)
+      (reset! last-msg args))))
