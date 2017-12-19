@@ -10,14 +10,10 @@
   [])
 
 (defn part-1
-  ([] (part-1 (data)))
-  ([input]
-   ))
+  [])
 
 (defn part-2
-  ([] (part-2 (data)))
-  ([input]
-   ))
+  [])
 
 ;;;; Scratch
 
