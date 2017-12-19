@@ -134,6 +134,4 @@
   (set! *unchecked-math* :warn-on-boxed)
   (time (part-1)) ;; ~9ms, "GINOWKYXH"
   (time (part-2)) ;; ~9ms, 16636
-
-  (mapv vec (data))
   )
