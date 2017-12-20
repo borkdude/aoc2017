@@ -25,11 +25,10 @@
      ax        ay        az]))
 
 (defn manhattan
-  [[^long px ^long py ^long pz & _ :as particle]]
-  (when particle
-    (+ (Math/abs px)
-       (Math/abs py)
-       (Math/abs pz))))
+  [[^long px ^long py ^long pz & _]]
+  (+ (Math/abs px)
+     (Math/abs py)
+     (Math/abs pz)))
 
 (defn closest
   [particles]
@@ -56,6 +55,7 @@
          (throw (ex-info "Not converged below max." {}))
          (recur iterations comp new next-n max))))))
 
+;; We could have used Newton, of course...
 (defn part-1
   []
   (converge (iterate solve1 (data))
@@ -65,8 +65,8 @@
             1000000))
 
 (defn position
-  [[^long px ^long py ^long pz & _ :as particle]]
-  (when particle [px py pz]))
+  [[^long px ^long py ^long pz & _]]
+  [px py pz])
 
 (defn remove-by-position
   [particles [x y z]]
