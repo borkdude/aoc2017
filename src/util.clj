@@ -1,6 +1,7 @@
 (ns util
   (:require [clojure.java.io :as io]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [clojure.spec.alpha :as s])
   (:import [java.io BufferedReader]))
 
 (defn read-lines
@@ -53,11 +54,13 @@
   (println x)
   x)
 
-(let [last-msg (atom nil)]
-  (defn print-changed [& args]
-    (when (not= args @last-msg)
-      (apply println args)
-      (reset! last-msg args))))
+(let [last-msg (atom {})]
+  (defn print-changed [k & args]
+    (when (not= args (get @last-msg k))
+      (apply println k args)
+      (swap! last-msg assoc k args)))
+  (defn reset-print-changed! []
+    (reset! last-msg {})))
 
 (defn take-until
   ([pred coll]
@@ -66,3 +69,8 @@
       (if (pred (first s))
         (cons (first s) nil)
         (cons (first s) (take-until pred (rest s))))))))
+
+(defn assert!
+  [spec expr]
+  (if-not (s/valid? spec expr)
+    (throw (ex-info "" (s/explain-data spec expr)))))
