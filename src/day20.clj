@@ -22,7 +22,7 @@
         vz (+ vz az)]
     [(+ px vx) (+ py vy) (+ pz vz)
      vx        vy        vz
-     ax ay az]))
+     ax        ay        az]))
 
 (defn manhattan
   [[^long px ^long py ^long pz & _ :as particle]]
