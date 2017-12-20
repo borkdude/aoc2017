@@ -14,9 +14,9 @@
         (resource-reducible "day20.txt")))
 
 (defn update-particle
-  [[^long px ^long py ^long pz ^long
-    vx ^long vy ^long vz ^long
-    ax ^long ay ^long az]]
+  [[^long px ^long py ^long pz
+    ^long vx ^long vy ^long vz
+    ^long ax ^long ay ^long az]]
   (let [vx (+ vx ax)
         vy (+ vy ay)
         vz (+ vz az)]
@@ -65,7 +65,7 @@
             1000000))
 
 (defn position
-  [[^long px ^long py ^long pz & _]]
+  [[px py pz & _]]
   [px py pz])
 
 (defn remove-by-position
