@@ -2,7 +2,8 @@
   (:require
    [clojure.edn :as edn]
    [clojure.string :as str]
-   [util :refer [resource-reducible]]))
+   [util :refer [resource-reducible]]
+   [criterium.core :refer [quick-bench]]))
 
 (defn data
   []
@@ -76,7 +77,9 @@
                 [px py pz]))
            particles)))
 
-(defn remove-colliding
+;; this ugly function is the result of a wrong understanding at first
+;; of part 2 and then some refactoring
+(defn remove-colliding-v1
   [particles]
   (first
    (reduce
@@ -91,9 +94,22 @@
     [#{} #{}]
     particles)))
 
+;; and it isn't even faster than this clean looking one
+(defn remove-colliding-v2
+  [particles]
+  (into #{}
+        (comp
+         (remove (fn [[k v]]
+                   (> (count v) 1)))
+         (map (comp first val)))
+        (group-by position particles)))
+
+(comment
+  (remove-colliding [[0 0 0 1 1 1] [0 0 0 1 2 3] [0 1 0 1 0 1]]))
+
 (defn solve2
   [particles]
-  (remove-colliding
+  (remove-colliding-v2
    (into #{} (map update-particle particles))))
 
 (defn part-2
@@ -111,4 +127,6 @@
   (set! *unchecked-math* :warn-on-boxed)
   (time (part-1)) ;; 157, ~116ms 
   (time (part-2)) ;; 499, ~1.2s
+  (quick-bench (part-2)) ;; 1.13s with remove-colliding-v1
+  (quick-bench (part-2)) ;; 1.05s with remove-colliding-v1
   )
