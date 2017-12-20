@@ -104,9 +104,6 @@
          (map (comp first val)))
         (group-by position particles)))
 
-(comment
-  (remove-colliding [[0 0 0 1 1 1] [0 0 0 1 2 3] [0 1 0 1 0 1]]))
-
 (defn solve2
   [particles]
   (remove-colliding-v2
