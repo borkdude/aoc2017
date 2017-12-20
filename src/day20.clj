@@ -69,33 +69,7 @@
   [[px py pz & _]]
   [px py pz])
 
-(defn remove-by-position
-  [particles [x y z]]
-  (set
-   (remove (fn [[px py pz & _]]
-             (= [x y z]
-                [px py pz]))
-           particles)))
-
-;; this ugly function is the result of a wrong understanding at first
-;; of part 2 and then some refactoring
-(defn remove-colliding-v1
-  [particles]
-  (first
-   (reduce
-    (fn [[removed positions]
-         particle]
-      (let [pos (position particle)]
-        (if (contains? positions pos)
-          [(remove-by-position removed pos)
-           positions]
-          [(conj removed particle)
-           (conj positions pos)])))
-    [#{} #{}]
-    particles)))
-
-;; and it isn't even faster than this clean looking one
-(defn remove-colliding-v2
+(defn remove-colliding
   [particles]
   (into #{}
         (comp
@@ -106,7 +80,7 @@
 
 (defn solve2
   [particles]
-  (remove-colliding-v2
+  (remove-colliding
    (into #{} (map update-particle particles))))
 
 (defn part-2
@@ -124,6 +98,5 @@
   (set! *unchecked-math* :warn-on-boxed)
   (time (part-1)) ;; 157, ~116ms 
   (time (part-2)) ;; 499, ~1.2s
-  (quick-bench (part-2)) ;; 1.13s with remove-colliding-v1
-  (quick-bench (part-2)) ;; 1.05s with remove-colliding-v1
+  (quick-bench (part-2)) ;; 1.05s
   )
