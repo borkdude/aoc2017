@@ -43,13 +43,13 @@
   ([iterations comp ^long init ^long max]
    (converge iterations comp
              (first (drop init iterations))
-             (* 2 init) max))
+             (+ init 100) max))
   ([iterations comp prev n max]
    (let [iterations (drop n iterations)
          new (first iterations)
          cprev (comp prev)
          cnew  (comp new)
-         next-n (* 2 ^long n)]
+         next-n (+ ^long n 100)]
      (if (= cprev cnew)
        cprev
        (if (> next-n ^long max)
@@ -81,7 +81,7 @@
 (defn solve2
   [particles]
   (remove-colliding
-   (into #{} (map update-particle particles))))
+   (map update-particle particles)))
 
 (defn part-2
   []
@@ -96,7 +96,8 @@
   (set! *print-length* 20)
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
-  (time (part-1)) ;; 157, ~116ms 
+  (time (part-1)) ;; 157, ~70ms 
   (time (part-2)) ;; 499, ~1.2s
-  (quick-bench (part-2)) ;; 1.05s
+  (quick-bench (part-1)) ;; 67ms
+  (quick-bench (part-2)) ;; 582ms
   )
