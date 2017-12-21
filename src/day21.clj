@@ -98,11 +98,11 @@
      (mapv #(mapv (fn [g] (apply str (flatten g))) %)))))
 
 (defn build-grid
-  [lines-of-groups]
-  (->> lines-of-groups
+  [lines-of-squares]
+  (->> lines-of-squares
        (mapv (fn [line]
-               (mapv (fn [group]
-                       (str/split group #"/"))
+               (mapv (fn [square]
+                       (str/split square #"/"))
                      line)))
        (mapv #(apply mapv vector %))
        (mapcat (fn [line]
