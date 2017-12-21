@@ -4,7 +4,8 @@
                  [net.cgrand/xforms "0.15.0"]
                  [criterium "0.4.4"]
                  [instaparse "1.4.8"]
-                 [org.blancas/kern "1.1.0"]]
+                 [org.blancas/kern "1.1.0"]
+                 [org.flatland/ordered "1.5.6"]]
  :resource-paths #{"resources" "src"})
 
 (task-options!
@@ -33,6 +34,6 @@
 (deftask run-all
   []
   (with-pass-thru [_]
-    (doseq [day (range 1 (inc 20))
+    (doseq [day (range 1 (inc 21))
             part [1 2]]
       (run-day-part day part))))
