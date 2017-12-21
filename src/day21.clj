@@ -3,8 +3,7 @@
    [clojure.edn :as edn]
    [clojure.string :as str]
    [criterium.core :refer [quick-bench]]
-   [util :refer [resource-reducible
-                 parse-int find-first]]
+   [util :refer [resource-reducible]]
    [clojure.set :as set]
    [flatland.ordered.map :refer [ordered-map]]))
 
