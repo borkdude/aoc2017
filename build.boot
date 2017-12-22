@@ -34,6 +34,6 @@
 (deftask run-all
   []
   (with-pass-thru [_]
-    (doseq [day (range 1 (inc 21))
+    (doseq [day (range 1 (inc 22))
             part [1 2]]
       (run-day-part day part))))
