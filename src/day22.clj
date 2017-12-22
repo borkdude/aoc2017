@@ -55,7 +55,7 @@
 
 (defn next-char-1
   [c]
-  (if (= \# c)
+  (if (infected? c)
     \. \#))
 
 (defn next-state-1
