@@ -6,43 +6,27 @@ mul b 100
 sub b -100000
 set c b
 sub c -17000
-;; past these instruction, we'll never get back here via jnz, so consider this the initial config
-;; a = 1, b = 106500, c = 123500
-;; == begin outer loop (jnz 1 -23 points back here)
-set f 1 ;; f is only ever set to 0 or 1, so probably a boolean, let's say f == 0 means true and f == 1 means false
-set d 2 ;; d represents what?
-;; === begin middle loop (jnz g -13 points back here)
-set e 2 ;; e is a counter starting at 2, incremented via subs e -1 and compared with b, so that's the end value
-;; ==== begin most inner loop
-set g d 
-mul g e ;; g equals d * e
-sub g b ;; compare d * e to b - when the difference is 0, we set f to true.
-jnz g 2 
-set f 0 
+set f 1
+set d 2
+set e 2
+set g d
+mul g e
+sub g b
+jnz g 2
+set f 0
 sub e -1
-set g e 
-sub g b ;; compare e with b. if zero, loop is done. so e walks from 2 .. b.
+set g e
+sub g b
 jnz g -8
-;; ==== end most inner loop
 sub d -1
-set g d  
-sub g b  ;; compare b to d. apparently d walks from 2 to b as well. if zero, loop done.
+set g d
+sub g b
 jnz g -13
-;; === end middle loop
-jnz f 2 ;; if f == false, don't increment h. What is h counting and what does flag f mean?
+jnz f 2
 sub h -1
 set g b
-sub g c ;; compare b to c. if zero, program ends.
-jnz g 2 ;; else, b = b + 17 and continue loop, wat?
-jnz 1 3 ;; program ends
+sub g c
+jnz g 2
+jnz 1 3
 sub b -17
 jnz 1 -23
-;; == end outer loop
-
-;; b is a counter from b_init .. c with steps of 17. why 17?
-;; d is a counter from 2 to b
-;; e is a counter from 2 to b
-;; if b == e*d then f is true, this means b is a number of two factors, i.e. non-prime
-;; if f == true, then h is incremented
-;; optimization: if f is found to be true, jump straight to sub h-1 (didn't make program fast enough)
-;; conclusion: we are counting non-primes between b_init and c (inclusive) in steps of 17

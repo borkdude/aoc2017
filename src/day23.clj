@@ -6,18 +6,18 @@
    [util :refer [resource-reducible]]))
 
 (defn data
-  []
+  [path]
   (into []
         (comp
-         (map #(str/replace % #"(;;).*" ""))
+         (map #(str/replace % #";;.*" ""))
          (remove empty?)
          (map #(format "[%s]" %))
          (map edn/read-string))
-        (resource-reducible "day23.txt")))
+        (resource-reducible path)))
 
 (defn solve1
   [instructions registers]
-  (loop [{:keys [ctr
+  (loop [{:keys [^long ctr
                  registers]
           :as p}
          {:ctr 0
@@ -32,10 +32,10 @@
            set (assoc-reg p reg (get-val registers arg))
            mul (->
                 p
-                (assoc-reg reg (* (get registers reg 0)
+                (assoc-reg reg (* ^long (get registers reg 0)
                                   (get-val registers arg)))
                 (update :mul-count inc))
-           sub (assoc-reg p reg (- (get registers reg 0)
+           sub (assoc-reg p reg (- ^long (get registers reg 0)
                                    (get-val registers arg)))
            jnz (let [x-val (get-val registers reg)
                      y-val (get-val registers arg)
@@ -46,17 +46,26 @@
 
 (defn part-1
   []
-  (:mul-count (solve1 (data) {})))
+  (:mul-count (solve1
+               (data "day23.txt")
+               {})))
 
-;;;; For an analysis of the assembly, look in resources/day23.txt
+(defn part-2-impossibly-slow
+  []
+  (get (solve1
+        (data "day23-analysis.txt")
+        {'a 1})
+       'h))
+
+;;;; For an analysis of the assembly, look in resources/day23-analysis.txt
 
 (defn non-prime
   "If non-prime, returns first factor, nil otherwise"
-  [n]
+  [^long n]
   (when (> n 1)
     (first
      (let [root (int (Math/sqrt n))]
-       (for [i (range 2 (inc root))
+       (for [^long i (range 2 (inc root))
              :when (zero? (rem n i))]
          i)))))
 
@@ -69,7 +78,8 @@
 (comment
   (set! *print-length* 20)
   (set! *warn-on-reflection* true)
-  (set! *unchecked-math* false)
+  (set! *unchecked-math* :warn-on-boxed)
   (time (part-1)) ;; 3969, ~26ms
-  (time (part-2)) ;; 7112, 89ms
+  (time (part-2)) ;; 917, ~1.6ms
+  (time (part-2-impossibly-slow))
   )

@@ -15,7 +15,7 @@
          (map edn/read-string))
         (resource-reducible "day18.txt")))
 
-(defn get-val
+(defn get-val ^long
   [registers reg]
   (if (symbol? reg)
     (get registers reg 0) reg))
