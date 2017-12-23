@@ -51,7 +51,7 @@
 ;;;; For an analysis of the assembly, look in resources/day23.txt
 
 (defn non-prime
-  "If non-prime returns first factor, nil otherwise"
+  "If non-prime, returns first factor, nil otherwise"
   [n]
   (when (> n 1)
     (first
