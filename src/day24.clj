@@ -80,9 +80,8 @@
   []
   (let [sols (solutions (data))
         lws (map lengths-and-strengths sols)
-        lws-sorted (sort-by (fn [[^long l ^long s]]
-                              [(- l) (- s)])
-                            (flatten* lws))]
+        lws-sorted (sort (comp - compare)
+                         (flatten* lws))]
     (second (first lws-sorted))))
 
 ;;;; Scratch
@@ -92,5 +91,5 @@
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
   (time (part-1)) ;; 1859, ~5.8s
-  (time (part-2)) ;; 1799, ~6.8s
+  (time (part-2)) ;; 1799, ~6.4s
   )
