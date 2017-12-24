@@ -159,10 +159,5 @@
   (quick-bench (part-1)) ;;  1859, ~5.65s
   (quick-bench (part-1')) ;; 1859, ~1.60s
   (quick-bench (part-2)) ;;  1799, ~5.97s
-  (quick-bench (part-2')) ;; 1799, ~1.57s
-
-  (def sols (solutions' (component-index (data))))
-  (time (first
-         (sort (comp - compare) sols)))
-  
+  (quick-bench (part-2')) ;; 1799, ~1.57s  
   )
