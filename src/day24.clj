@@ -54,18 +54,18 @@
 (defn part-1
   []
   (let [sols (solutions (data))
-        weights (map solution-strengths sols)]
-    (apply max (flatten weights))))
+        strengths (map solution-strengths sols)]
+    (apply max (flatten strengths))))
 
-(defn lengths-and-weights
+(defn lengths-and-strengths
   ([solution]
-   (lengths-and-weights [0 0] solution))
+   (lengths-and-strengths [0 0] solution))
   ([[^long length ^long strength] [head & rst]]
    (let [strength-head (component-strength head)
          strength' (+ strength-head strength)
          new-lw [(inc length) strength']]
      (if (seq rst)
-       (map #(lengths-and-weights
+       (map #(lengths-and-strengths
               new-lw %) rst)
        new-lw))))
 
@@ -79,7 +79,7 @@
 (defn part-2
   []
   (let [sols (solutions (data))
-        lws (map lengths-and-weights sols)
+        lws (map lengths-and-strengths sols)
         lws-sorted (sort-by (fn [[^long l ^long s]]
                               [(- l) (- s)])
                             (flatten* lws))]
