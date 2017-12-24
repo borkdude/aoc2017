@@ -30,9 +30,10 @@
                     (first
                      (disj c n))
                     n)]
-         (cons c (solutions
-                  (disj components c)
-                  other)))))))
+         (cons c
+               (solutions
+                (disj components c)
+                other)))))))
 
 (defn component-strength ^long
   [component]
@@ -84,6 +85,43 @@
                          (flatten* lws))]
     (second (first lws-sorted))))
 
+;;;; Refactor
+
+(defn solutions'
+  ([components]
+   (solutions' components 0 0 0))
+  ([components n length strength]
+   (if-let [connecting
+            (seq (find-connecting n components))]
+     (mapcat
+      (fn [c]
+        (let [strength' (+ strength
+                           (component-strength c))
+              length' (inc length)
+              other (or
+                     (first
+                      (disj c n))
+                     n)]
+          (solutions'
+           (disj components c)
+           other
+           length'
+           strength')))
+      connecting)
+     [[length strength]])))
+
+(defn part-1'
+  []
+  (let [sols (solutions' (data))]
+    (second (apply max-key second sols))))
+
+(defn part-2'
+  []
+  (let [sols (solutions' (data))]
+    (second
+     (first
+      (sort (comp - compare) sols)))))
+
 ;;;; Scratch
 
 (comment
@@ -91,5 +129,7 @@
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
   (time (part-1)) ;; 1859, ~5.8s
+  (time (part-1')) ;; 1859 ~4.8ms
   (time (part-2)) ;; 1799, ~6.4s
+  (time (part-2')) ;; 1799, ~5.0s
   )
