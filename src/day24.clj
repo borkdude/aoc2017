@@ -2,8 +2,8 @@
   (:require
    [clojure.edn :as edn]
    [clojure.string :as str]
-   [util :refer [resource-reducible]]
-   [clojure.set :refer [index]]))
+   [criterium.core :refer [quick-bench]]
+   [util :refer [resource-reducible]]))
 
 (defn data
   []
@@ -108,7 +108,7 @@
 (defn solutions'
   ([idx]
    (solutions' idx 0 0 0))
-  ([idx n length strength]
+  ([idx n ^long length ^long strength]
    (if-let [connecting
             (seq (get idx n))]
      (mapcat
@@ -146,8 +146,8 @@
   (set! *print-length* 20)
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
-  (time (part-1)) ;; 1859, ~5.8s
-  (time (part-1')) ;; 1859 ~1.5s
-  (time (part-2)) ;; 1799, ~5.7s
-  (time (part-2')) ;; 1799, ~1.7ss
+  (quick-bench (part-1)) ;;  1859, ~5.65s
+  (quick-bench (part-1')) ;; 1859, ~1.60s
+  (quick-bench (part-2)) ;;  1799, ~5.97s
+  (quick-bench (part-2')) ;; 1799, ~1.85s
   )
