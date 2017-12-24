@@ -147,7 +147,7 @@
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
   (time (part-1)) ;; 1859, ~5.8s
-  (time (part-1')) ;; 1859 ~1.5ms
+  (time (part-1')) ;; 1859 ~1.5s
   (time (part-2)) ;; 1799, ~5.7s
   (time (part-2')) ;; 1799, ~1.7ss
   )
