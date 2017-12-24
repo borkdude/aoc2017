@@ -133,12 +133,22 @@
   (let [sols (solutions' (component-index (data)))]
     (second (apply max-key second sols))))
 
+(defn max-by-length-and-strengh
+  [solutions]
+  (reduce (fn [[^long l1 ^long s1 :as c1]
+               [^long l2 ^long s2 :as c2]]
+            (if (or (> l2 l1)
+                    (and (= l2 l1)
+                         (> s2 s1)))
+              c2
+              c1))
+          solutions))
+
 (defn part-2'
   []
   (let [sols (solutions' (component-index (data)))]
     (second
-     (first
-      (sort (comp - compare) sols)))))
+     (max-by-length-and-strengh sols))))
 
 ;;;; Scratch
 
@@ -149,5 +159,10 @@
   (quick-bench (part-1)) ;;  1859, ~5.65s
   (quick-bench (part-1')) ;; 1859, ~1.60s
   (quick-bench (part-2)) ;;  1799, ~5.97s
-  (quick-bench (part-2')) ;; 1799, ~1.85s
+  (quick-bench (part-2')) ;; 1799, ~1.57s
+
+  (def sols (solutions' (component-index (data))))
+  (time (first
+         (sort (comp - compare) sols)))
+  
   )
