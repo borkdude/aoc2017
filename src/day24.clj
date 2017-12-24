@@ -2,17 +2,18 @@
   (:require
    [clojure.edn :as edn]
    [clojure.string :as str]
-   [util :refer [resource-reducible]]))
+   [util :refer [resource-reducible]]
+   [clojure.set :refer [index]]))
 
 (defn data
   []
-  (into #{}
-        (comp
-         (map #(str/replace % #"/" " "))
-         (map #(format "[%s]" %))
-         (map edn/read-string)
-         (map set))
-        (resource-reducible "day24.txt")))
+  (eduction
+   (comp
+    (map #(str/replace % #"/" " "))
+    (map #(format "[%s]" %))
+    (map edn/read-string)
+    (map set))
+   (resource-reducible "day24.txt")))
 
 (defn find-connecting
   [n components]
@@ -54,7 +55,7 @@
 
 (defn part-1
   []
-  (let [sols (solutions (data))
+  (let [sols (solutions (into #{} (data)))
         strengths (map solution-strengths sols)]
     (apply max (flatten strengths))))
 
@@ -79,7 +80,7 @@
 
 (defn part-2
   []
-  (let [sols (solutions (data))
+  (let [sols (solutions (into #{}(data)))
         lws (map lengths-and-strengths sols)
         lws-sorted (sort (comp - compare)
                          (flatten* lws))]
@@ -87,12 +88,29 @@
 
 ;;;; Refactor
 
+(defn component-index
+  [eduction]
+  (reduce
+   (fn [acc c]
+     (let [[a b] (seq c)]
+       (cond->
+           (update acc a (fnil conj #{}) c)
+         b (update b (fnil conj #{}) c))))
+   {}
+   eduction))
+
+(defn remove-component
+  [index c]
+  (let [[a b] (seq c)]
+    (cond-> (update index a disj c)
+      b (update b disj c))))
+
 (defn solutions'
-  ([components]
-   (solutions' components 0 0 0))
-  ([components n length strength]
+  ([idx]
+   (solutions' idx 0 0 0))
+  ([idx n length strength]
    (if-let [connecting
-            (seq (find-connecting n components))]
+            (seq (get idx n))]
      (mapcat
       (fn [c]
         (let [strength' (+ strength
@@ -103,7 +121,7 @@
                       (disj c n))
                      n)]
           (solutions'
-           (disj components c)
+           (remove-component idx c)
            other
            length'
            strength')))
@@ -112,12 +130,12 @@
 
 (defn part-1'
   []
-  (let [sols (solutions' (data))]
+  (let [sols (solutions' (component-index (data)))]
     (second (apply max-key second sols))))
 
 (defn part-2'
   []
-  (let [sols (solutions' (data))]
+  (let [sols (solutions' (component-index (data)))]
     (second
      (first
       (sort (comp - compare) sols)))))
@@ -129,7 +147,7 @@
   (set! *warn-on-reflection* true)
   (set! *unchecked-math* :warn-on-boxed)
   (time (part-1)) ;; 1859, ~5.8s
-  (time (part-1')) ;; 1859 ~4.8ms
-  (time (part-2)) ;; 1799, ~6.4s
-  (time (part-2')) ;; 1799, ~5.0s
+  (time (part-1')) ;; 1859 ~1.5ms
+  (time (part-2)) ;; 1799, ~5.7s
+  (time (part-2')) ;; 1799, ~1.7ss
   )
