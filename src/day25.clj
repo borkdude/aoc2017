@@ -18,25 +18,21 @@
     [F 1] [1  1  A]})
 
 (defn next-game
-  [{:keys [state tape
-           ^long steps ^long position]}]
+  [{:keys [state tape ^long position]}]
   (let [cur-val (get tape position 0)
         [to-write ^long dir next-state]
-        (get transitions [state cur-val])
-        next-tape (assoc tape position to-write)
-        next-position (+ position dir)]
+        (get transitions [state cur-val])]
     {:state next-state
-     :tape next-tape
-     :steps (inc steps)
-     :position next-position}))
+     :tape (assoc tape position to-write)
+     :position (+ position dir)}))
 
 (defn solve
   []
-  (nth (iterate next-game
-                {:state 'A
-                 :tape {}
-                 :steps 0
-                 :position 0})
+  (nth (iterate
+        next-game
+        {:state 'A
+         :tape {}
+         :position 0})
        12208951))
 
 (defn part-1
