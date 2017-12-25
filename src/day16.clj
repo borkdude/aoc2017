@@ -1,7 +1,6 @@
 (ns day16
   (:require
    [blancas.kern.core :as k]
-   [blancas.kern.lexer.basic :as l]
    [clojure.edn :as edn]
    [clojure.string :as str]
    [criterium.core :refer [quick-bench]]
@@ -54,13 +53,17 @@
             (.indexOf progs x)
             (.indexOf progs y)))
 
+(def dispatch
+  {:SPIN spin
+   :EXCHANGE exchange
+   :PARTNER partner})
+
 (defn eval-expr
   [progs [tag & args]]
-  (apply ({:SPIN spin
-           :EXCHANGE exchange
-           :PARTNER partner} tag)
-         progs
-         args))
+  (let [f (dispatch tag)]
+    (apply f 
+     progs
+     args)))
 
 (defn solve
   [progs parsed]
@@ -114,33 +117,33 @@
 
 ;;;; Kern parser
 
-(def partner
+(def parse-partner
   (k/bind [_  (k/sym* \p)
            p1 k/letter
            _ (k/sym* \/)
            p2 k/letter]
           (k/return [:PARTNER p1 p2])))
 
-(def exchange
+(def parse-exchange
   (k/bind [_ (k/sym* \x)
            pos1 k/dec-num
            _ (k/sym* \/)
            pos2 k/dec-num]
           (k/return [:EXCHANGE pos1 pos2])))
 
-(def spin
+(def parse-spin
   (k/bind [_ (k/sym* \s) n k/dec-num]
           (k/return [:SPIN n])))
 
-(def instruction
-  (k/<|> spin exchange partner))
+(def parse-instruction
+  (k/<|> parse-spin parse-exchange parse-partner))
 
-(def input
-  (k/sep-by1 (k/sym* \,) instruction))
+(def parse-input
+  (k/sep-by1 (k/sym* \,) parse-instruction))
 
 (defn parse-data3
   [d]
-  (:value (k/parse-data input d)))
+  (:value (k/parse-data parse-input d)))
 
 ;;;; Scratch
 
@@ -154,14 +157,4 @@
   (= parsed1 parsed2 parsed3) ;; true
   (quick-bench (part-1 programs parsed1)) ;; ~7ms,   "olgejankfhbmpidc"
   (quick-bench (part-2 programs parsed1)) ;; ~422ms, "gfabehpdojkcimnl"
-
-  (:value
-   (k/parse (k/<$>
-             (fn [[p1 p2]] [:EXCHANGE p1 p2])
-             (k/>> (k/sym* \x)
-                   (k/<*> k/dec-num
-                          (k/>> (k/sym* \/) k/dec-num))))
-            "x10/6")) ;;=> [:EXCHANGE 10 6]
-
-  (k/sep-by1)
   )
