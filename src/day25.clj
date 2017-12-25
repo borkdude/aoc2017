@@ -18,7 +18,8 @@
     [F 1] [1  1  A]})
 
 (defn next-game
-  [{:keys [state tape ^long steps ^long  position]}]
+  [{:keys [state tape
+           ^long steps ^long position]}]
   (let [cur-val (get tape position 0)
         [to-write ^long dir next-state]
         (get transitions [state cur-val])
