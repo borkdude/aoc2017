@@ -1,6 +1,6 @@
 # Advent of Code 2017
 
-Solutions mostly in Clojure.
+Solutions in Clojure.
 
 ## Run
 
