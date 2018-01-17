@@ -222,10 +222,7 @@
 
 (s/def ::instructions
   (s/and (s/conformer #(str/split % #","))
-         (s/cat :instructions
-                (s/* ::instruction))
-         (s/conformer (fn [parsed]
-                        (:instructions parsed)))))
+         (s/* ::instruction)))
 
 (comment
   (s/conform ::instructions "s10,x11/2,pl/g") ;; [[:SPIN 10] [:EXCHANGE 11 2] [:PARTNER \l \g]]
