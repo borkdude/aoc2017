@@ -23,14 +23,13 @@ part1 = let
   posX = (oddSqrt - 1) `div` 2
   posY = posX
   diff = input - (oddSqrt ^ 2)
-  -- one to the right if possible
-  (right,diff') = (min diff 1,max 0 diff - 1)
+  -- move one to the right if possible
+  right = min diff 1
+  diff' = diff - right
   posX' = posX + right
-  -- oddSqrt + 1 up if possible
-  maxUpLeft = oddSqrt + 1
-  (up, diff'') = if (diff' - maxUpLeft) >= 0
-                 then (oddSqrt + 1, diff' - maxUpLeft)
-                 else (diff',0)
+  -- move up oddSqrt + 1 or with whatever is left
+  up = min diff' oddSqrt + 1
+  diff'' = diff' - up
   posY' = posY - up
   -- move left with whatever is left
   posX'' = posX' - diff''
