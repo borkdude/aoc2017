@@ -28,4 +28,4 @@ diff :: [Int] -> Int
 diff = (-) <$> maximum <*> minimum
 
 part1 :: IO Int
-part1 = sum . map diff <$> input
+part1 = input |$> map diff |> sum
