@@ -28,4 +28,12 @@ diff :: [Int] -> Int
 diff = (-) <$> maximum <*> minimum
 
 part1 :: IO Int
-part1 = input |$> map diff |> sum
+part1 = input2 |$> map diff |> sum
+
+divisibles :: [Int] -> (Int, Int)
+divisibles xs = head [ (x, y) | x <- xs, y <- xs,
+                       x /= y, x `mod` y == 0]
+
+part2 :: IO Int
+part2 = input2 |$>
+  map (divisibles |> uncurry div) |> sum 
