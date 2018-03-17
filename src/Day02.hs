@@ -2,7 +2,8 @@ module Day02 where
 
 -- apply a function to a thing inside a thing
 -- e.g. ffmap (+1) [Just 1]
-ffmap a b = (fmap . fmap) a b
+ffmap :: (Functor f1, Functor f2) => (a -> b) -> f1 (f2 a) -> f1 (f2 b) 
+ffmap = fmap . fmap
 
 input :: IO [[Int]]
 input = ffmap read . map words . lines <$>
