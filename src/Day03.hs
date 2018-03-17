@@ -34,4 +34,4 @@ part1 = let
   posY' = posY - up
   -- move left with whatever is left
   posX'' = posX' - diff''
-  in abs posX'' + abs posY' `debug` (show posX'' ++ "," ++ show posY') 
+  in abs posX'' + abs posY'

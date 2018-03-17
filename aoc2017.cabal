@@ -31,7 +31,7 @@ library
   build-depends:
       base >=4.7 && <5
   exposed-modules:
-    Day01, Day02
+    Day01, Day02, Day03
   other-modules:
       Util, Paths_aoc2017
   default-language: Haskell2010
