@@ -1,7 +1,7 @@
 module Day02 where
 
 -- apply a function to a thing inside a thing
--- e.g. ffmap (+1) [Just 1]
+-- e.g. ffmap (+1) [Just 1] == [Just 2]
 ffmap :: (Functor f1, Functor f2) => (a -> b) -> f1 (f2 a) -> f1 (f2 b) 
 ffmap = fmap . fmap
 
@@ -19,7 +19,7 @@ input = ffmap read . map words . lines <$>
 infixr 6 |$>
 (|$>) a b = fmap b a -- Just 1 |$> (+1) == Just 2
 
--- better?
+-- better? arguably...
 input2 :: IO [[Int]]
 input2 = readFile "resources/day2.txt" |$>
   lines |> map words |> ffmap read  
