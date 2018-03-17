@@ -7,10 +7,14 @@ import Util (liftPredMaybe)
 import Debug.Trace
 
 input :: IO [[Int]]
-input = do
-  contents <- readFile "resources/day2.txt"
-  let ls = (fmap . fmap) read $ map words $ lines contents
-  return ls
+input = (fmap . fmap) read . map words . lines <$> readFile "resources/day2.txt"
+
+(|>) = flip (.)
+(|$>) a b = fmap b a
+
+input2 :: IO [[Int]]
+input2 = readFile "resources/day2.txt" |$> (lines |> map words |> (fmap . fmap) read)
+
 
 diff :: [Int] -> Int
 diff = (-) <$> maximum <*> minimum
