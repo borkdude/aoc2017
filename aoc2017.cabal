@@ -40,7 +40,7 @@ executable aoc2017-exe
   main-is: Main.hs
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N, -fwarn-name-shadowing
   build-depends:
       aoc2017
     , base >=4.7 && <5
@@ -53,7 +53,7 @@ test-suite aoc2017-test
   main-is: Spec.hs
   hs-source-dirs:
       test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N, -fwarn-name-shadowing
   build-depends:
       aoc2017
       , base >=4.7 && <5
